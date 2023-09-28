@@ -1,0 +1,16 @@
+[submodule "OpenSource2-SDK/dependencies/imgui"]
+	path = OpenSource2-SDK/dependencies/imgui
+	url = https://github.com/ocornut/imgui.git
+[submodule "OpenSource2-SDK/dependencies/stb"]
+	path = OpenSource2-SDK/dependencies/stb
+	url = https://github.com/cristeigabriel/STB.git
+[submodule "OpenSource2-SDK/dependencies/implot"]
+	path = OpenSource2-SDK/dependencies/implot
+	url = https://github.com/epezent/implot.git
+[submodule "OpenSource2-SDK/dependencies/glm"]
+	path = OpenSource2-SDK/dependencies/glm
+	url = https://github.com/g-truc/glm.git
+[submodule "OpenSource2-SDK/dependencies/nlohmann"]
+	path = OpenSource2-SDK/dependencies/nlohmann
+	url = https://github.com/nlohmann/json.git
+	branch = develop
