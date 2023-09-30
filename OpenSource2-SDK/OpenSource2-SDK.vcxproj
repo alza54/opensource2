@@ -226,7 +226,7 @@
     <ClCompile Include="src\sdk\source-sdk\classes\entity\c_baseentity.cpp" />
     <ClCompile Include="src\sdk\source-sdk\classes\entity\c_basemodelentity.cpp" />
     <ClCompile Include="src\sdk\source-sdk\classes\entity\c_csplayerpawn.cpp" />
-    <ClCompile Include="src\sdk\source-sdk\classes\entity\c_weaponcsbase.cpp" />
+    <ClCompile Include="src\sdk\source-sdk\classes\entity\c_csweaponbase.cpp" />
     <ClCompile Include="src\sdk\source-sdk\classes\gcsdk\cgcclient.cpp" />
     <ClCompile Include="src\sdk\source-sdk\classes\gcsdk\cgcclientsystem.cpp" />
   </ItemGroup>
@@ -662,7 +662,7 @@
     <ClInclude Include="src\sdk\source-sdk\classes\entity\c_csplayerpawn.hpp" />
     <ClInclude Include="src\sdk\source-sdk\classes\entity\c_csplayerpawnbase.hpp" />
     <ClInclude Include="src\sdk\source-sdk\classes\entity\c_plantedc4.hpp" />
-    <ClInclude Include="src\sdk\source-sdk\classes\entity\c_weaponcsbase.hpp" />
+    <ClInclude Include="src\sdk\source-sdk\classes\entity\c_csweaponbase.hpp" />
     <ClInclude Include="src\sdk\source-sdk\classes\gcsdk\cgcclient.hpp" />
     <ClInclude Include="src\sdk\source-sdk\classes\gcsdk\cgcclientsystem.hpp" />
     <ClInclude Include="src\sdk\source-sdk\classes\types\cglobalvarsbase.hpp" />

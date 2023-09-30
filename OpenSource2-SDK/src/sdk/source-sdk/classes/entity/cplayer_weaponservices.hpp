@@ -3,7 +3,7 @@
 #include "../../../schema/schema.hpp"
 #include "../chandle.hpp"
 #include "../cnetworkutlvectorbase.hpp"
-#include "c_weaponcsbase.hpp"
+#include "c_csweaponbase.hpp"
 
 namespace os2::sdk {
   class CPlayer_WeaponServices {

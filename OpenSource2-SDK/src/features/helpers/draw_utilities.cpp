@@ -1,5 +1,7 @@
 #include "draw_utilities.hpp"
 
+// WIP
+
 void DrawUtilities::Destroy() {
   // Reset the readiness flag
   bIsReady = false;

@@ -7,7 +7,7 @@
 namespace os2::menu {
   inline bool bIsOpen = false;
 
-  struct {
+  struct Windows {
     bool AimAssist;
     bool AutoShoot;
     bool RecoilControl;
@@ -18,5 +18,5 @@ namespace os2::menu {
 
     bool BunnyHop;
     bool ESP;
-  } Windows;
+  };
 };  // namespace os2::menu

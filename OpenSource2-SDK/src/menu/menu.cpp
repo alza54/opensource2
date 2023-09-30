@@ -9,11 +9,11 @@
 #include "../sdk/interfaces/interfaces.hpp"
 #include "../features/helpers/post_processing.hpp"
 
-static bool g_showTable = false;
+inline bool g_showTable = false;
 
-void os2::menu::ShowUnloadPopup(bool& shouldShow) {
-  shouldShow = true;
+#define MENU_WINDOW_WIDTH (const unsigned int)512
 
+bool os2::menu::ShowUnloadPopup() {
   ImGui::OpenPopup("Are You Sure?");
 
   if (ImGui::BeginPopupModal("Are You Sure?", NULL,
@@ -28,16 +28,16 @@ void os2::menu::ShowUnloadPopup(bool& shouldShow) {
     ImGui::SameLine();
 
     if (ImGui::Button("No")) {
-      shouldShow = false;
+      return false;
     }
 
     ImGui::EndPopup();
   }
+
+  return true;
 }
 
 void os2::menu::Render() {
-  static const unsigned int WindowWidth = 512;
-
   static char classInputText[64];
 
   ImGuiIO& IO = ImGui::GetIO();
@@ -100,17 +100,18 @@ void os2::menu::Render() {
   }
 
   ImGui::SeparatorText("Other settings");
-  ImGui::SetNextItemWidth(WindowWidth);
+  ImGui::SetNextItemWidth(MENU_WINDOW_WIDTH);
   ImGui::InputTextWithHint("##l0", "Class", classInputText,
                            IM_ARRAYSIZE(classInputText));
 
-  if (ImGui::Button("Print class layout in game console", { WindowWidth, 0 }))
+  if (ImGui::Button("Print class layout in game console",
+                    {MENU_WINDOW_WIDTH, 0}))
     os2::fn::SchemaDetailedClassLayout(nullptr, classInputText);
 
   if (ImGui::IsItemHovered())
     ImGui::SetTooltip("Type 'C_BaseEntity' to understand what this does.");
 
-  if (ImGui::Button("Unload", {WindowWidth, 0})) {
+  if (ImGui::Button("Unload", {MENU_WINDOW_WIDTH, 0})) {
     os2::entrypoint::BeginUnloadProcedure();
   }
 

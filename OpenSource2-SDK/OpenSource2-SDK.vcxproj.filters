@@ -335,7 +335,7 @@
     <ClCompile Include="src\sdk\source-sdk\classes\entity\c_csplayerpawn.cpp">
       <Filter>Project Files\sdk\source-sdk\classes\entity</Filter>
     </ClCompile>
-    <ClCompile Include="src\sdk\source-sdk\classes\entity\c_weaponcsbase.cpp">
+    <ClCompile Include="src\sdk\source-sdk\classes\entity\c_csweaponbase.cpp">
       <Filter>Project Files\sdk\source-sdk\classes\entity</Filter>
     </ClCompile>
     <ClCompile Include="src\sdk\source-sdk\classes\entity\cgamescenenode.cpp">
@@ -1466,7 +1466,7 @@
     <ClInclude Include="src\sdk\source-sdk\classes\entity\c_csplayerpawnbase.hpp">
       <Filter>Project Files\sdk\source-sdk\classes\entity</Filter>
     </ClInclude>
-    <ClInclude Include="src\sdk\source-sdk\classes\entity\c_weaponcsbase.hpp">
+    <ClInclude Include="src\sdk\source-sdk\classes\entity\c_csweaponbase.hpp">
       <Filter>Project Files\sdk\source-sdk\classes\entity</Filter>
     </ClInclude>
     <ClInclude Include="src\sdk\source-sdk\classes\entity\cbaseplayercontroller.hpp">

@@ -15,13 +15,13 @@
 
 #include "esp.hpp"
 
+#define ESP_WINDOW_WIDTH (const unsigned int)512
+
 using namespace os2::sdk;
 using namespace Game::Data;
 
 void ESP::RenderUI() noexcept {
   using namespace os2::menu;
-
-  static const unsigned int WindowWidth = 512;
 
   if (!os2::menu::IsOpen()) return;
 
@@ -32,7 +32,7 @@ void ESP::RenderUI() noexcept {
 
   ImGui::Begin("ESP", &ESP::DrawGUI(), ImGuiWindowFlags_AlwaysAutoResize);
 
-  ImGui::SetNextItemWidth(WindowWidth);
+  ImGui::SetNextItemWidth(ESP_WINDOW_WIDTH);
 
   ImGui::Checkbox("Enable ESP", &ESP::Enabled());
 
@@ -123,7 +123,7 @@ void ESP::OnRender() noexcept {
         RenderPlayerESP((CCSPlayerController*)pEntity, it.boundingBox);
         break;
       case EEntityType::BASE_WEAPON:
-        RenderWeaponESP((C_WeaponCSBase*)pEntity, it.boundingBox);
+        RenderWeaponESP((C_CSWeaponBase*)pEntity, it.boundingBox);
         break;
       case EEntityType::CHICKEN:
         RenderChickenESP((C_Chicken*)pEntity, it.boundingBox);
@@ -289,8 +289,8 @@ void ESP::RenderPlayerESP(CCSPlayerController* pPlayerController,
   if (DrawPlayerActiveWeaponName()) {
     CPlayer_WeaponServices* pWeaponServices = pPawn->m_pWeaponServices();
     if (pWeaponServices) {
-      C_WeaponCSBase* pActiveWeapon =
-          pWeaponServices->m_hActiveWeapon().Get<C_WeaponCSBase>();
+      C_CSWeaponBase* pActiveWeapon =
+          pWeaponServices->m_hActiveWeapon().Get<C_CSWeaponBase>();
       if (pActiveWeapon) {
         RenderWeaponName(pActiveWeapon, bBox);
       }
@@ -298,7 +298,8 @@ void ESP::RenderPlayerESP(CCSPlayerController* pPlayerController,
   }
 }
 
-void ESP::RenderWeaponESP(C_WeaponCSBase* pWeapon, const BBox_t& bBox) noexcept {
+void ESP::RenderWeaponESP(C_CSWeaponBase* pWeapon,
+                          const BBox_t& bBox) noexcept {
   if (pWeapon->m_hOwnerEntity().IsValid()) return;
 
   if (MaxWeaponDistance() != 0.f &&
@@ -322,7 +323,8 @@ void ESP::RenderWeaponESP(C_WeaponCSBase* pWeapon, const BBox_t& bBox) noexcept 
   }
 }
 
-void ESP::RenderWeaponName(C_WeaponCSBase* pWeapon, const BBox_t& bBox) noexcept {
+void ESP::RenderWeaponName(C_CSWeaponBase* pWeapon,
+                           const BBox_t& bBox) noexcept {
   // Function to avoid spaghetti code.
   C_AttributeContainer* pAttributeContainer = pWeapon->m_AttributeManager();
   if (!pAttributeContainer) return;

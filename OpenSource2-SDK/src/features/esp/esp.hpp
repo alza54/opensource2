@@ -117,9 +117,9 @@ class ESP : public Feature {
   void RenderSkeleton(sdk::C_CSPlayerPawn* pPawn) noexcept;
   void RenderPlayerESP(sdk::CCSPlayerController* pPlayerController,
                        const sdk::BBox_t& bBox) noexcept;
-  void RenderWeaponESP(sdk::C_WeaponCSBase* pWeapon,
+  void RenderWeaponESP(sdk::C_CSWeaponBase* pWeapon,
                        const sdk::BBox_t& bBox) noexcept;
-  void RenderWeaponName(sdk::C_WeaponCSBase* pWeapon,
+  void RenderWeaponName(sdk::C_CSWeaponBase* pWeapon,
                         const sdk::BBox_t& bBox) noexcept;
   void RenderChickenESP(sdk::C_Chicken* pChicken,
                         const sdk::BBox_t& bBox) noexcept;

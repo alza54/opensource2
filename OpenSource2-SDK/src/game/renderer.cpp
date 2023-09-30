@@ -21,7 +21,7 @@
 void OpenSource2_StyleGUI();
 void OpenSource2_PrepareFonts();
 
-bool showAreYouSurePopup = false;
+inline bool show_confirmation_popup = false;
 
 void OpenSource2_PrepareGUI() {
   ImPlot::SetImGuiContext(ImGui::GetCurrentContext());
@@ -33,9 +33,12 @@ void OpenSource2_PrepareGUI() {
 void OpenSource2_Render() {
   if (os2::hooks::g_isShuttingDown) return;
 
-  if (ImGui::IsKeyPressed(ImGuiKey_End, false) && !showAreYouSurePopup) {
-    os2::menu::ShowUnloadPopup(showAreYouSurePopup);
+  if (ImGui::IsKeyPressed(ImGuiKey_End, false) && !show_confirmation_popup) {
+    show_confirmation_popup = true;
   }
+
+  if (show_confirmation_popup && !os2::menu::ShowUnloadPopup())
+    show_confirmation_popup = false;
 
   Game::Data::g_pGameData->SetDrawList(ImGui::GetBackgroundDrawList());
 

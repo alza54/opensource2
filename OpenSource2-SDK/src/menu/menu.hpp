@@ -31,7 +31,7 @@ namespace os2::menu {
     inline static ImFont* mdi = nullptr;
   }  // namespace fonts
 
-  void ShowUnloadPopup(bool& shouldShow);
+  bool ShowUnloadPopup();
   void Render();
 
   void Toggle(bool bState);

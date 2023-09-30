@@ -82,7 +82,7 @@ static HRESULT WINAPI Hooks::Present(IDXGISwapChain* pSwapChain, UINT SyncInterv
                                 UINT Flags) {
   DirectXHook::RenderImGui_DX11(pSwapChain);
 
-  return CHooks::Present.m_pOriginalFn(pSwapChain, SyncInterval, Flags);
+  return CHooks::Present(pSwapChain, SyncInterval, Flags);
 }
 
 // static Present1_t CHooks::Present1;
@@ -90,8 +90,8 @@ static HRESULT WINAPI Hooks::Present1(IDXGISwapChain* pSwapChain, UINT SyncInter
            const DXGI_PRESENT_PARAMETERS* pPresentParameters) {
   DirectXHook::RenderImGui_DX11(pSwapChain);
 
-  return CHooks::Present1.m_pOriginalFn(pSwapChain, SyncInterval, PresentFlags,
-                                  pPresentParameters);
+  return CHooks::Present1(pSwapChain, SyncInterval, PresentFlags,
+                          pPresentParameters);
 }
 
 // static ResizeBuffers_t CHooks::ResizeBuffers;
@@ -101,8 +101,8 @@ static HRESULT WINAPI Hooks::ResizeBuffers(IDXGISwapChain* pSwapChain,
                                       UINT SwapChainFlags) {
   DirectXHook::CleanupRenderTarget();
 
-  return CHooks::ResizeBuffers.m_pOriginalFn(pSwapChain, BufferCount, Width, Height,
-                                       NewFormat, SwapChainFlags);
+  return CHooks::ResizeBuffers(pSwapChain, BufferCount, Width, Height,
+                               NewFormat, SwapChainFlags);
 }
 
 // static ResizeBuffers1_t CHooks::ResizeBuffers1;
@@ -114,9 +114,9 @@ static HRESULT WINAPI Hooks::ResizeBuffers1(IDXGISwapChain* pSwapChain,
                                        IUnknown* const* ppPresentQueue) {
   DirectXHook::CleanupRenderTarget();
 
-  return CHooks::ResizeBuffers1.m_pOriginalFn(pSwapChain, BufferCount, Width, Height,
-                                        NewFormat, SwapChainFlags,
-                                        pCreationNodeMask, ppPresentQueue);
+  return CHooks::ResizeBuffers1(pSwapChain, BufferCount, Width, Height,
+                                NewFormat, SwapChainFlags, pCreationNodeMask,
+                                ppPresentQueue);
 }
 
 // static CreateSwapChain_t CHooks::CreateSwapChain;
@@ -126,7 +126,7 @@ static HRESULT WINAPI Hooks::CreateSwapChain(IDXGIFactory* pFactory,
                                         IDXGISwapChain** ppSwapChain) {
   DirectXHook::CleanupRenderTarget();
 
-  return CHooks::CreateSwapChain.m_pOriginalFn(pFactory, pDevice, pDesc, ppSwapChain);
+  return CHooks::CreateSwapChain(pFactory, pDevice, pDesc, ppSwapChain);
 }
 
 // static CreateSwapChainForHwnd_t CHooks::CreateSwapChainForHwnd;
@@ -137,9 +137,9 @@ static HRESULT WINAPI Hooks::CreateSwapChainForHwnd(
     IDXGIOutput* pRestrictToOutput, IDXGISwapChain1** ppSwapChain) {
   DirectXHook::CleanupRenderTarget();
 
-  return CHooks::CreateSwapChainForHwnd.m_pOriginalFn(
-      pFactory, pDevice, hWnd, pDesc, pFullscreenDesc, pRestrictToOutput,
-      ppSwapChain);
+  return CHooks::CreateSwapChainForHwnd(pFactory, pDevice, hWnd, pDesc,
+                                        pFullscreenDesc, pRestrictToOutput,
+                                        ppSwapChain);
 }
 
 // static CreateSwapChainForCoreWindow_t CHooks::CreateSwapChainForCoreWindow;
@@ -149,8 +149,8 @@ static HRESULT WINAPI Hooks::CreateSwapChainForCoreWindow(
     IDXGISwapChain1** ppSwapChain) {
   DirectXHook::CleanupRenderTarget();
 
-  return CHooks::CreateSwapChainForCoreWindow.m_pOriginalFn(
-      pFactory, pDevice, pWindow, pDesc, pRestrictToOutput, ppSwapChain);
+  return CHooks::CreateSwapChainForCoreWindow(pFactory, pDevice, pWindow, pDesc,
+                                              pRestrictToOutput, ppSwapChain);
 }
 
 // static CreateSwapChainForComposition_t CHooks::CreateSwapChainForComposition;
@@ -160,8 +160,8 @@ static HRESULT WINAPI Hooks::CreateSwapChainForComposition(
     IDXGISwapChain1** ppSwapChain) {
   DirectXHook::CleanupRenderTarget();
 
-  return CHooks::CreateSwapChainForComposition.m_pOriginalFn(
-      pFactory, pDevice, pDesc, pRestrictToOutput, ppSwapChain);
+  return CHooks::CreateSwapChainForComposition(pFactory, pDevice, pDesc,
+                                               pRestrictToOutput, ppSwapChain);
 }
 
 void DirectXHook::Enter() {
@@ -214,8 +214,6 @@ void DirectXHook::Enter() {
 void DirectXHook::Leave() {
   if (!ImGui::GetCurrentContext()) return;
 
-  // DrawUtilities::destroy();
-
   ImGuiIO& io = ImGui::GetIO();
 
   if (io.BackendRendererUserData) {
@@ -239,8 +237,6 @@ void DirectXHook::CleanupRenderTarget() {
 
 void DirectXHook::CleanupDeviceD3D11() {
   CleanupRenderTarget();
-
-  // PostProcessing::onDeviceReset();
 
   if (g_pSwapChain) {
     g_pSwapChain->Release();
@@ -276,20 +272,7 @@ void DirectXHook::RenderImGui_DX11(IDXGISwapChain* pSwapChain) {
     ImGui_ImplDX11_NewFrame();
     ImGui_ImplWin32_NewFrame();
 
-    //PostProcessing::setDevice(g_pd3dDevice, g_pd3dDeviceContext,
-    //                          g_pd3dRenderTarget, pSwapChain);
-
     ImGui::NewFrame();
-
-    /*try {
-      g_pDrawUtilities = &DrawUtilities::instance();
-
-      g_pDrawUtilities->Initialise(g_pd3dDevice, g_pd3dDeviceContext);
-
-      LOG(log_create_draw_utilities_succeeded.c_str());
-    } catch (std::exception& e) {
-      LOG(log_create_draw_utilities_failed.c_str(), e.what());
-    }*/
 
     void OpenSource2_Render();
     OpenSource2_Render();

@@ -117,6 +117,7 @@ void os2::memory::initialise() {
 
   os2::module::client
        ->FindPattern(GET_PLAYER_CONTROLLER)
+      .ToAbsolute(1, 0)
       .Get(FUNCTION_VARIABLE(GetPlayerController));
 
   os2::module::client

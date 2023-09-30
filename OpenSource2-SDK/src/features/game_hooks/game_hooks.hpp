@@ -12,7 +12,7 @@ typedef CHook<void __fastcall(void*, void*, VMatrix*, VMatrix*, VMatrix*,
 typedef CHook<void* __fastcall(void*, CEntityInstance*, CHandle)> OnAddEntity_t;
 typedef CHook<void* __fastcall(void*, CEntityInstance*, CHandle)> OnRemoveEntity_t;
 typedef CHook<void __fastcall(CCSGOInput*, const std::int32_t, const bool)> CreateMove_t;
-typedef CHook<void __fastcall(void*, CSource2Client*, const std::int32_t)> FrameStageNotify_t;
+typedef CHook<void __fastcall(void*, const std::int32_t)> FrameStageNotify_t;
 typedef CHook<__int64 __fastcall(void*)> LevelInit_t;
 
 namespace CHooks {
@@ -38,9 +38,7 @@ namespace Hooks {
                                          CHandle hHandle);
   static void __fastcall CreateMove(CCSGOInput* input, const std::int32_t slot,
                                     const bool active);
-  static void __fastcall FrameStageNotify(void* rcx,
-                                          CSource2Client* source_2_client,
-                                          const std::int32_t stage);
+  static void __fastcall FrameStageNotify(void* rcx, const std::int32_t stage);
   static __int64 __fastcall LevelInit(void* rcx);
   }; // namespace Hooks
 
@@ -48,7 +46,7 @@ const enum EHookIndexes {
   ON_ADD_ENTITY = 14, // CGameEntitySystem instance
   ON_REMOVE_ENTITY = 15, // CGameEntitySystem instance
   CREATE_MOVE = 5, // CCSGOInput
-  FRAME_STAGE_NOTIFY = 32, // Client interface
+  FRAME_STAGE_NOTIFY = 31, // Client interface
 };
 
 namespace os2 {

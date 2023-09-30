@@ -20,26 +20,27 @@ namespace os2::sdk {
   template <typename T>
   class CHook {
    public:
+    std::add_pointer_t<T> m_pOriginal;
     // Template has been used to avoid casts.
     template <typename OriginalT, typename HookT>
     void Hook(OriginalT _pOriginalFn, HookT &pHookFn, const char *szHookName) {
-      if (this->m_pOriginalFn) return;
+      if (this->m_pOriginal) return;
 
       void *pOriginalFn = static_cast<void *>(_pOriginalFn);
 
       if (!pOriginalFn) return;
 
-      this->m_pOriginalFn =
-          reinterpret_cast<decltype(this->m_pOriginalFn)>(pOriginalFn);
+      this->m_pOriginal =
+          reinterpret_cast<decltype(this->m_pOriginal)>(pOriginalFn);
 
       int rv = funchook_prepare(funchook_ctx,
-                                reinterpret_cast<void **>(&this->m_pOriginalFn),
+                                reinterpret_cast<void **>(&this->m_pOriginal),
                                 reinterpret_cast<void *>(pHookFn));
 
       if (rv == FUNCHOOK_ERROR_SUCCESS) {
         LOG(strings::log_hook_success.c_str(), szHookName, pOriginalFn, pHookFn);
       } else {
-        this->m_pOriginalFn = nullptr;
+        this->m_pOriginal = nullptr;
         LOG(strings::log_hook_fail.c_str(), szHookName);
       }
     }
@@ -50,6 +51,11 @@ namespace os2::sdk {
       this->Hook(vmt::GetVMethod(index, pClass), pHookFn, szHookName);
     }
 
-    std::add_pointer_t<T> m_pOriginalFn;
+    template <typename... Args>
+    auto operator()(Args &&...args)
+        -> decltype(std::invoke(this->m_pOriginal,
+                                std::forward<Args>(args)...)) {
+      return std::invoke(this->m_pOriginal, std::forward<Args>(args)...);
+    }
   };
 };  // namespace os2::sdk

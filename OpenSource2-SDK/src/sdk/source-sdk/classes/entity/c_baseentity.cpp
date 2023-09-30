@@ -38,7 +38,7 @@ bool C_BaseEntity::IsPlantedC4() {
   return hash_32_fnv1a_const(className) == C_PlantedC4;
 }
 
-bool C_BaseEntity::IsViewModel() { return CALL_VIRTUAL(bool, 241, this); }
+bool C_BaseEntity::IsViewModel() { return CALL_VIRTUAL(bool, 242, this); }
 
 const Vector& C_BaseEntity::GetOrigin() {
   static const Vector null{};

@@ -27,7 +27,7 @@ void ResolveFromAddress(std::uint64_t address, T& out,
 
 static bool __fastcall Hooks::MouseInputEnabled(void* rcx) {
   if (os2::menu::IsOpen()) return false;
-  return CHooks::MouseInputEnabled.m_pOriginalFn(rcx);
+  return CHooks::MouseInputEnabled(rcx);
 }
 
 static void __fastcall Hooks::GetMatricesForView(void* rcx, void* view,
@@ -35,7 +35,7 @@ static void __fastcall Hooks::GetMatricesForView(void* rcx, void* view,
                                                  VMatrix* pViewToProjection,
                                                  VMatrix* pWorldToProjection,
                                                  VMatrix* pWorldToPixels) {
-  CHooks::GetMatricesForView.m_pOriginalFn(rcx, view, pWorldToView,
+  CHooks::GetMatricesForView(rcx, view, pWorldToView,
                                            pViewToProjection,
                                            pWorldToProjection, pWorldToPixels);
 
@@ -48,16 +48,16 @@ static void __fastcall Hooks::GetMatricesForView(void* rcx, void* view,
 
 static void* __fastcall Hooks::OnAddEntity(void* rcx, CEntityInstance* pInstance, CHandle hHandle) {
   Data::g_pGameData->OnAddEntity(pInstance, hHandle);
-  return CHooks::OnAddEntity.m_pOriginalFn(rcx, pInstance, hHandle);
+  return CHooks::OnAddEntity(rcx, pInstance, hHandle);
 }
 
 static void* __fastcall Hooks::OnRemoveEntity(void* rcx, CEntityInstance* pInstance, CHandle hHandle) {
   Data::g_pGameData->OnRemoveEntity(pInstance, hHandle);
-  return CHooks::OnRemoveEntity.m_pOriginalFn(rcx, pInstance, hHandle);
+  return CHooks::OnRemoveEntity(rcx, pInstance, hHandle);
 }
 
 static void __fastcall Hooks::CreateMove(CCSGOInput* input, const std::int32_t slot, const bool active) {
-  CHooks::CreateMove.m_pOriginalFn(input, slot, active);
+  CHooks::CreateMove(input, slot, active);
 
   CUserCmd* cmd = input->get_user_cmd();
 
@@ -77,13 +77,13 @@ static void __fastcall Hooks::CreateMove(CCSGOInput* input, const std::int32_t s
   gameFeatures->OnCreateMove(input, cmd, view_angles);
 }
 
-static void __fastcall Hooks::FrameStageNotify(void* rcx, CSource2Client* source_2_client, const std::int32_t stage) {
-  State::LocalController = os2::fn::GetEntityByIndex(-1);
+static void __fastcall Hooks::FrameStageNotify(void* rcx, const std::int32_t stage) {
+  State::LocalController = CGameEntitySystem::GetLocalPlayerController();
   State::LocalPawn = State::LocalController != nullptr
-                         ? os2::fn::GetPlayerPawn(State::LocalController)
+                         ? State::LocalController->m_hPawn().Get<C_CSPlayerPawn>()
                          : nullptr;
 
-  CHooks::FrameStageNotify.m_pOriginalFn(rcx, source_2_client, stage);
+  CHooks::FrameStageNotify(rcx, stage);
 }
 
 static __int64 __fastcall Hooks::LevelInit(void* rcx) {
@@ -91,7 +91,7 @@ static __int64 __fastcall Hooks::LevelInit(void* rcx) {
 
   ResolveFromAddress(os2::fn::GlobalVarsAddress, State::GlobalVars, true);
 
-  return CHooks::LevelInit.m_pOriginalFn(rcx);
+  return CHooks::LevelInit(rcx);
 }
 
 void os2::game::initialise() {
@@ -101,8 +101,7 @@ void os2::game::initialise() {
 
   CHooks::MouseInputEnabled.Hook(os2::fn::MouseInputEnabled,
                                  HOOK_FUNCTION(Hooks::MouseInputEnabled));
-  CHooks::GetMatricesForView.Hook(
-      os2::fn::GetMatricesForView,
+  CHooks::GetMatricesForView.Hook(os2::fn::GetMatricesForView,
                                   HOOK_FUNCTION(Hooks::GetMatricesForView));
   CHooks::OnAddEntity.HookVirtual(CGameEntitySystem::GetInstance(),
                                   ON_ADD_ENTITY,
