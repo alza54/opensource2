@@ -304,7 +304,7 @@ void ESP::RenderWeaponESP(C_CSWeaponBase* pWeapon,
 
   if (MaxWeaponDistance() != 0.f &&
       Game::State::LocalPawn->DistanceToSquared(pWeapon) >=
-          std::pow(MaxWeaponDistance(), 2))
+          (MaxWeaponDistance() * MaxWeaponDistance()))
     return;
 
   const ImVec2 min = {bBox.x, bBox.y};
@@ -477,7 +477,8 @@ void ESP::RenderPlantedC4(C_PlantedC4* pBomb, const BBox_t& bBox) noexcept {
   if (DrawBombTimer()) {
     const auto color = BombFadeColor(blowTime, pBomb->m_flTimerLength());
 
-    RenderProgressBar(drawPosition, bBox.w, color, blowTime);
+    RenderProgressBar({(min.x + max.x - 64.f) / 2.f, max.y + 20 + 6}, 64.f,
+                      color, blowTime / pBomb->m_flTimerLength());
   }
 
   if (DrawBombTimerText()) {
@@ -498,7 +499,11 @@ void ESP::RenderPlantedC4(C_PlantedC4* pBomb, const BBox_t& bBox) noexcept {
     ImGui::SetNextWindowBgAlpha(0.3f);
     ImGui::SetNextWindowPos({24.f, 24.f},
                             ImGuiCond_Once);
+    ImGui::SetNextWindowSize({256.f, 64.f});
     ImGui::Begin("Bomb Watermark", nullptr, windowFlags);
+
+    const auto [win_x, win_y] = ImGui::GetWindowSize();
+    const auto window_pos = ImGui::GetWindowPos();
 
     if (pBomb->m_hBombDefuser().IsValid()) {
       const bool canDefuse =
@@ -506,18 +511,25 @@ void ESP::RenderPlantedC4(C_PlantedC4* pBomb, const BBox_t& bBox) noexcept {
 
       auto pDefuser = pBomb->m_hBombDefuser().Get<CCSPlayerController>();
 
-      if (pDefuser->GetRefEHandle() ==
-          Game::State::LocalController->GetRefEHandle()) {
-        ImGui::Text(canDefuse ? "You can defuse" : "Run!");
+      if (pDefuser->GetRefEHandle().GetEntryIndex() ==
+          Game::State::LocalController->GetRefEHandle().GetEntryIndex()) {
+        RenderCenteredTextWithOutline(window_pos, win_x, win_y,
+                                      canDefuse ? "You can defuse" : "Run!");
       } else {
-        ImGui::Text("%s defuses bomb and defuse",
-                    pDefuser->m_sSanitizedPlayerName(),
-                    canDefuse ? "can" : "can't");
+        std::ostringstream ss;
+        ss << pDefuser->m_sSanitizedPlayerName() << " defuses the bomb and"
+           << (canDefuse ? "can" : "can't") << " defuse";
+
+        RenderCenteredTextWithOutline(window_pos, win_x, win_y, ss.str().c_str());
       }
     } else {
+      std::ostringstream ss;
+      ss << std::fixed << std::setprecision(1) << "Bomb explodes in " << blowTime
+                              << " s";
+
       ImU32 color = BombFadeColor(blowTime, pBomb->m_flTimerLength());
-      ImGui::TextColored(ImGui::ColorConvertU32ToFloat4(color),
-                         "Bomb explodes in %.1f seconds", blowTime);
+      RenderCenteredTextWithOutline(window_pos, win_x, win_y, ss.str().c_str(),
+                                    color, 0x000000FF);
     }
 
     ImGui::End();

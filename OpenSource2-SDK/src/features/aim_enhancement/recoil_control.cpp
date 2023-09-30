@@ -11,19 +11,15 @@ using namespace os2::sdk;
 void RecoilControl::OnRender() noexcept { RenderUI(); }
 
 void RecoilControl::RenderUI() noexcept {
-  if (DrawPreview()) RenderRecoilPreview(ImVec2(500, 500));
-
   if (!DrawGUI() || !os2::menu::IsOpen()) return;
 
   ImGui::PushFont(os2::menu::fonts::libertad_mono);
 
   ImGui::SetNextWindowSize({500, 0});
 
-  ImGui::Begin(this->Name(), &DrawPreview(),
-               ImGuiWindowFlags_AlwaysAutoResize);
+  ImGui::Begin(this->Name(), &DrawGUI(), ImGuiWindowFlags_AlwaysAutoResize);
 
   ImGui::Checkbox("Enable Recoil Control", &Enabled());
-  ImGui::Checkbox("Enable Recoil Control Preview", &DrawPreview());
   ImGui::SliderFloat("Perfection in X-axis", &PerfectionX(), 0.f, 100.f,
                      "%.3f");
   ImGui::SliderFloat("Perfection in Y-axis", &PerfectionY(), 0.f, 100.f,
@@ -68,66 +64,5 @@ void RecoilControl::OnCreateMove(CCSGOInput* pCsgoInput, CUserCmd* pUserCmd,
   } else {
     this->bulletsPre.clear();
     this->bulletsPost.clear();
-  }
-}
-
-static void SquareConstraint(ImGuiSizeCallbackData *data) {
-  data->DesiredSize =
-      ImVec2(std::max(data->DesiredSize.x, data->DesiredSize.y),
-             std::max(data->DesiredSize.x, data->DesiredSize.y));
-}
-
-void RecoilControl::RenderRecoilPreview(ImVec2 vecWindowSize) noexcept {
-  ImGui::SetNextWindowSize(vecWindowSize, ImGuiCond_FirstUseEver);
-  ImGui::SetNextWindowSizeConstraints(ImVec2(0, 0), ImVec2(FLT_MAX, FLT_MAX),
-                                      SquareConstraint);
-
-  auto windowFlags =
-      ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar |
-      ImGuiStyleVar_FrameBorderSize | ImGuiWindowFlags_NoTitleBar;
-
-  if (!os2::menu::IsOpen()) windowFlags |= ImGuiWindowFlags_NoInputs;
-
-  if (ImGui::Begin("Radar", &DrawPreview(), windowFlags)) {
-    ImDrawList* drawList = ImGui::GetWindowDrawList();
-
-    ImVec2 windowPosition = ImGui::GetWindowPos();
-    ImVec2 windowSize = ImGui::GetWindowSize();
-
-    drawList->AddLine(
-        ImVec2(windowPosition.x + windowPosition.x * 0.5f, windowPosition.y),
-        ImVec2(windowPosition.x + windowSize.x * 0.5f,
-               windowPosition.y + windowSize.y),
-        ImColor(70, 70, 70, 255), 1.f);
-    drawList->AddLine(
-        ImVec2(windowPosition.x, windowPosition.y + windowSize.y * 0.5f),
-        ImVec2(windowPosition.x + windowSize.x,
-               windowPosition.y + windowSize.y * 0.5f),
-        ImColor(70, 70, 70, 255), 1.f);
-
-    drawList->AddLine(ImVec2(windowPosition.x + windowSize.x * 0.5f,
-                             windowPosition.y + windowSize.y * 0.5f),
-                      ImVec2(windowPosition.x, windowPosition.y),
-                      ImColor(90, 90, 90, 255), 1.f);
-    drawList->AddLine(ImVec2(windowPosition.x + windowSize.x * 0.5f,
-                             windowPosition.y + windowSize.y * 0.5f),
-                      ImVec2(windowPosition.x + windowSize.x, windowPosition.y),
-                      ImColor(90, 90, 90, 255), 1.f);
-
-    const auto centerX = windowPosition.x + windowSize.x * 0.5f;
-    const auto centerY = windowPosition.y + windowSize.y * 0.5f;
-
-    drawList->AddCircleFilled(ImVec2(centerX, centerY), 5.f, ImColor(255, 30, 30, 255));
-
-    for (auto bullet : bulletsPre) {
-      drawList->AddCircle(ImVec2(centerX + bullet.x, centerY + bullet.y), 3.f, ImColor(50, 0, 0, 200));
-    }
-
-    for (auto bullet : bulletsPost) {
-      drawList->AddCircleFilled(ImVec2(centerX + bullet.x, centerY + bullet.y), 4.f,
-                          ImColor(0, 222, 0, 222));
-    }
-
-    ImGui::End();
   }
 }

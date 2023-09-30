@@ -5,6 +5,9 @@
 namespace os2::sdk {
   class C_CSPlayerPawn : public C_CSPlayerPawnBase {
    public:
+    SCHEMA_FIELD(m_aimPunchCache, "C_CSPlayerPawn", "m_aimPunchCache",
+                 CUtlVector<glm::vec3>);
+
     bool IsEnemyWithTeam(int team);
 
     [[nodiscard]] bool IsDormant();

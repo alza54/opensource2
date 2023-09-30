@@ -25,7 +25,5 @@ namespace os2::sdk {
                  "m_bHasMovedSinceSpawn", bool);
     SCHEMA_FIELD(m_szLastPlaceName, "C_CSPlayerPawnBase", "m_szLastPlaceName",
                  char[18]);
-    SCHEMA_FIELD(m_aimPunchCache, "C_CSPlayerPawnBase", "m_aimPunchCache",
-                 CUtlVector<glm::vec3>);
   };
 };  // namespace os2::sdk
