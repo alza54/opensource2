@@ -450,11 +450,12 @@ void ESP::RenderProgressBar(ImVec2 position, float width, unsigned int color,
   int progressWidth = static_cast<int>(progress * width);
   drawList->AddRectFilled(
       position, ImVec2(position.x + progressWidth, position.y + height), color,
-      rounding, ImDrawCornerFlags_All);
+      rounding, ImDrawFlags_RoundCornersAll);
 
   // Border
   drawList->AddRect(position, ImVec2(position.x + width, position.y + height),
-                    borderColor, rounding, ImDrawCornerFlags_All, borderWidth);
+                    borderColor, rounding, ImDrawFlags_RoundCornersAll,
+                    borderWidth);
 }
 
 void ESP::RenderPlantedC4(C_PlantedC4* pBomb, const BBox_t& bBox) noexcept {
@@ -477,7 +478,7 @@ void ESP::RenderPlantedC4(C_PlantedC4* pBomb, const BBox_t& bBox) noexcept {
   if (DrawBombTimer()) {
     const auto color = BombFadeColor(blowTime, pBomb->m_flTimerLength());
 
-    RenderProgressBar({(min.x + max.x - 64.f) / 2.f, max.y + 20 + 6}, 64.f,
+    RenderProgressBar({(min.x + max.x - 64.f) / 2.f, max.y + 20 + 6}, 72.f,
                       color, blowTime / pBomb->m_flTimerLength());
   }
 

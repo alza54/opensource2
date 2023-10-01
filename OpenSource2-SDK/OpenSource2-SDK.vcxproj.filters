@@ -207,6 +207,9 @@
     <Filter Include="Project Files\features\helpers\post_processing">
       <UniqueIdentifier>{3c4c25fe-aef2-4b25-8524-22f497eca6b2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Project Files\features\triggerbot">
+      <UniqueIdentifier>{ea6d5f60-dc4d-455f-83ac-170d80f15c4d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\entrypoint\dllmain.cpp">
@@ -379,6 +382,12 @@
     </ClCompile>
     <ClCompile Include="src\features\helpers\post_processing.cpp">
       <Filter>Project Files\features\helpers\post_processing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\features\triggerbot\triggerbot.cpp">
+      <Filter>Project Files\features\triggerbot</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sdk\source-sdk\classes\types\c_trace.cpp">
+      <Filter>Project Files\sdk\source-sdk\classes\types</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1720,6 +1729,15 @@
     </ClInclude>
     <ClInclude Include="src\features\helpers\post_processing.hpp">
       <Filter>Project Files\features\helpers\post_processing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\features\triggerbot\triggerbot.hpp">
+      <Filter>Project Files\features\triggerbot</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sdk\source-sdk\classes\types\c_trace.hpp">
+      <Filter>Project Files\sdk\source-sdk\classes\types</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sdk\source-sdk\classes\c_baseplayerweapon.hpp">
+      <Filter>Project Files\sdk\source-sdk\classes\entity</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

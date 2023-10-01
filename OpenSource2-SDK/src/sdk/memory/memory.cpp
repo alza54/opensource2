@@ -134,6 +134,23 @@ void os2::memory::initialise() {
        ->FindPattern(GET_WEAPON_DATA)
       .Get(FUNCTION_VARIABLE(GetWeaponData));
 
+  // Tracing:
+  os2::module::client->FindPattern(GET_SURFACE_DATA)
+      .ToAbsolute(1, 0)
+      .Get(FUNCTION_VARIABLE(GetSurfaceData));
+
+  os2::module::client->FindPattern(GET_HANDLE_FROM_ENTITY)
+      .Get(FUNCTION_VARIABLE(GetEntityHandle));
+
+  os2::module::client->FindPattern(TRACE_SHAPE)
+      .Jmp()
+      .Get(FUNCTION_VARIABLE(TraceShape));
+
+  os2::module::client->FindPattern(ENGINE_TRACE)
+      .ToAbsolute(3, 0)
+      .Dereference(1)
+      .Get(FUNCTION_VARIABLE(EngineTrace));
+
   os2::sdk::CModule sdl3(os2::memory::strings::sdl3_dll);
 
   // SDL Functions:

@@ -17,11 +17,7 @@ namespace os2::sdk {
     std::uint32_t GetOwnerHandle();
 
     __forceinline glm::vec3 GetEyePosition() {
-      glm::vec3 eye_position;
-
-      CALL_VIRTUAL(std::uint64_t, 159, this, &eye_position);
-
-      return eye_position;
+      return this->m_pGameSceneNode()->m_vecOrigin() + this->m_vecViewOffset();
     }
 
     __forceinline glm::vec3 GetEyeAngles() {

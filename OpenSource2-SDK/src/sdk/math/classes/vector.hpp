@@ -7,6 +7,10 @@
 namespace os2::sdk {
   class Vector {
    public:
+    Vector(const glm::vec3& vec) noexcept : x{vec.x}, y{vec.y}, z{vec.z} {}
+    Vector(float x_, float y_, float z_) noexcept : x{x_}, y{y_}, z{z_} {}
+    Vector() noexcept : x(0.f), y(0.f), z(0.f) {}
+
     inline Vector operator+(const Vector& rhs) const noexcept {
       return Vector{this->x + rhs.x, this->y + rhs.y, this->z + rhs.z};
     }

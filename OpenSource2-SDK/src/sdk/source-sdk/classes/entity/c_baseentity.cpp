@@ -40,15 +40,13 @@ bool C_BaseEntity::IsPlantedC4() {
 
 bool C_BaseEntity::IsViewModel() { return CALL_VIRTUAL(bool, 242, this); }
 
-const Vector& C_BaseEntity::GetOrigin() {
-  static const Vector null{};
+glm::vec3 C_BaseEntity::GetOrigin() {
+  static const glm::vec3 null{};
 
   CGameSceneNode* pGameSceneNode = m_pGameSceneNode();
   if (!pGameSceneNode) return null;
 
-  glm::vec3 ret = pGameSceneNode->m_vecAbsOrigin();
-
-  return Vector{ret.x, ret.y, ret.z};
+  return pGameSceneNode->m_vecAbsOrigin();
 }
 
 bool C_BaseEntity::GetBoundingBox(BBox_t& out, bool computeSurroundingBox) {
@@ -59,7 +57,7 @@ bool C_BaseEntity::GetBoundingBox(BBox_t& out, bool computeSurroundingBox) {
   if (computeSurroundingBox) {
     if (!ComputeHitboxSurroundingBox(min, max)) return false;
   } else {
-    const Vector& absOrigin = GetOrigin();
+    const glm::vec3 absOrigin = GetOrigin();
     min = pCollision->m_vecMins() + absOrigin;
     max = pCollision->m_vecMaxs() + absOrigin;
   }

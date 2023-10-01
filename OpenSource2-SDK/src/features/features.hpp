@@ -5,6 +5,7 @@
 
 #include "movement/bunnyhop.hpp"
 #include "aim_enhancement/recoil_control.hpp"
+#include "triggerbot/triggerbot.hpp"
 #include "esp/esp.hpp"
 
 #include "../sdk/hooks/hooks.hpp"
@@ -15,6 +16,7 @@ class Features {
  public:
   std::unique_ptr<BunnyHop> bunnyHop = std::make_unique<BunnyHop>();
   std::unique_ptr<RecoilControl> recoilControl = std::make_unique<RecoilControl>();
+  std::unique_ptr<TriggerBot> triggerBot = std::make_unique<TriggerBot>();
   std::unique_ptr<ESP> esp = std::make_unique<ESP>();
 
  public:
@@ -23,6 +25,7 @@ class Features {
 
     bunnyHop->OnCreateMove(pCsgoInput, cmd, view_angles);
     recoilControl->OnCreateMove(pCsgoInput, cmd, view_angles);
+    triggerBot->OnCreateMove(pCsgoInput, cmd, view_angles);
   }
 
   [[maybe_unused]] void OnFrameStageNotify() noexcept {}
@@ -32,6 +35,7 @@ class Features {
 
     bunnyHop->OnRender();
     recoilControl->OnRender();
+    triggerBot->OnRender();
     esp->OnRender();
   }
 };

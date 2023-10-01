@@ -19,7 +19,7 @@ namespace os2::sdk {
     bool IsViewModel();
     bool IsPlantedC4();
 
-    const Vector& GetOrigin();
+    glm::vec3 GetOrigin();
     bool GetBoundingBox(os2::sdk::BBox_t& out,
                         bool computeSurroundingBox = false);
     bool ComputeHitboxSurroundingBox(Vector& mins, Vector& maxs);

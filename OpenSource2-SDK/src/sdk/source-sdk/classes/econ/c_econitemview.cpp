@@ -16,7 +16,7 @@ os2::sdk::CEconItem* os2::sdk::C_EconItemView::GetSOCData() {
   return nullptr;
 }
 
-os2::sdk::CWeaponCSBaseVData* os2::sdk::C_EconItemView::GetWeaponInfo() {
+os2::sdk::CCSWeaponBaseVData* os2::sdk::C_EconItemView::GetWeaponInfo() {
   if (!os2::fn::GetWeaponData) return nullptr;
   return os2::fn::GetWeaponData(this);
 }

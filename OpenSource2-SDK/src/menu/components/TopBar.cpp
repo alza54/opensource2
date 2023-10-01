@@ -74,7 +74,7 @@ void TopBar::Render() noexcept {
                        gameFeatures->recoilControl->DrawGUI(),
                        "Aimbot");
     TopBar::MenuItemEx("Auto Shoot", ICON_MDI_PISTOL,
-                       gameFeatures->recoilControl->DrawGUI(),
+                       gameFeatures->triggerBot->DrawGUI(),
                      "Triggerbot");
     TopBar::MenuItemEx("Recoil Control", ICON_MDI_LESS_THAN,
                        gameFeatures->recoilControl->DrawGUI(),

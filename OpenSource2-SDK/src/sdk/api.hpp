@@ -110,3 +110,14 @@
 #define GLOBAL_VARS SIGNATURE("48 8B 05 ? ? ? ? 48 8B D8 80 78 3D 00 75 1D 80 78 3C 00 75")
 
 #define LEVEL_INIT SIGNATURE("48 89 5C 24 ? 56 48 83 EC ? 48 8B 0D ? ? ? ? 48 8B F2")
+
+#define GET_SURFACE_DATA SIGNATURE("E8 ? ? ? ? 48 85 C0 74 ? 44 38 60")
+
+#define GET_HANDLE_FROM_ENTITY                                                \
+  SIGNATURE(                                                                  \
+      "48 85 C9 74 ? 48 8B 41 ? 48 85 C0 74 ? 44 8B 40 ? BA ? ? ? ? 8B 48 ? " \
+      "41 8B C0 83 E1")
+
+#define TRACE_SHAPE SIGNATURE("E8 ? ? ? ? 80 7D ? ? 75 ? F3 0F 10 45")
+
+#define ENGINE_TRACE SIGNATURE("4C 8B 3D ? ? ? ? 24 C9 0C 49 66 0F 7F 45 ?")

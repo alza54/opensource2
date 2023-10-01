@@ -25,23 +25,23 @@ namespace os2::sdk {
     Melee
   };
 
-  class CWeaponCSBaseVData {
+  class CCSWeaponBaseVData {
    public:
-    SCHEMA_FIELD(damage, "CWeaponCSBaseVData", "m_nDamage",
+    SCHEMA_FIELD(damage, "CCSWeaponBaseVData", "m_nDamage",
                  int32_t);  // Offset: 3376
-    SCHEMA_FIELD(headshotMultiplier, "CWeaponCSBaseVData",
+    SCHEMA_FIELD(headshotMultiplier, "CCSWeaponBaseVData",
                  "m_flHeadshotMultiplier", float);  // Offset: 3380
-    SCHEMA_FIELD(armorRatio, "CWeaponCSBaseVData", "m_flArmorRatio",
+    SCHEMA_FIELD(armorRatio, "CCSWeaponBaseVData", "m_flArmorRatio",
                  float);  // Offset: 3384
-    SCHEMA_FIELD(penetration, "CWeaponCSBaseVData", "m_flPenetration",
+    SCHEMA_FIELD(penetration, "CCSWeaponBaseVData", "m_flPenetration",
                  float);  // Offset: 3388
-    SCHEMA_FIELD(range, "CWeaponCSBaseVData", "m_flRange",
+    SCHEMA_FIELD(range, "CCSWeaponBaseVData", "m_flRange",
                  float);  // Offset: 3392
-    SCHEMA_FIELD(rangeModifier, "CWeaponCSBaseVData", "m_flRangeModifier",
+    SCHEMA_FIELD(rangeModifier, "CCSWeaponBaseVData", "m_flRangeModifier",
                  float);  // Offset: 3396
     SCHEMA_FIELD(bulletsInClip, "CBasePlayerWeaponVData", "m_nNumBullets",
                  int32_t);  // Offset: 268
-    SCHEMA_FIELD(type, "CWeaponCSBaseVData", "m_WeaponType",
+    SCHEMA_FIELD(type, "CCSWeaponBaseVData", "m_WeaponType",
                  CSWeaponType);  // Offset: 576
   };
 
@@ -50,7 +50,7 @@ namespace os2::sdk {
   class C_EconItemView {
    public:
     CEconItem* GetSOCData();
-    CWeaponCSBaseVData* GetWeaponInfo();
+    CCSWeaponBaseVData* GetWeaponInfo();
 
     auto GetCustomPaintKitIndex() { return CALL_VIRTUAL(int, 2, this); }
     auto GetStaticData() { return CALL_VIRTUAL(CEconItemDefinition*, 13, this); }

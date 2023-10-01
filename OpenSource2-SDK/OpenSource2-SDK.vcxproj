@@ -49,7 +49,7 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -157,7 +157,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)dependencies;$(SolutionDir)dependencies\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <CompileAsManaged>true</CompileAsManaged>
+      <CompileAsManaged>false</CompileAsManaged>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -203,6 +203,7 @@
     <ClCompile Include="src\features\helpers\draw_utilities.cpp" />
     <ClCompile Include="src\features\helpers\post_processing.cpp" />
     <ClCompile Include="src\features\movement\bunnyhop.cpp" />
+    <ClCompile Include="src\features\triggerbot\triggerbot.cpp" />
     <ClCompile Include="src\gamedata\gamedata.cpp" />
     <ClCompile Include="src\game\renderer.cpp" />
     <ClCompile Include="src\menu\components\TopBar.cpp" />
@@ -229,6 +230,7 @@
     <ClCompile Include="src\sdk\source-sdk\classes\entity\c_csweaponbase.cpp" />
     <ClCompile Include="src\sdk\source-sdk\classes\gcsdk\cgcclient.cpp" />
     <ClCompile Include="src\sdk\source-sdk\classes\gcsdk\cgcclientsystem.cpp" />
+    <ClCompile Include="src\sdk\source-sdk\classes\types\c_trace.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dependencies\funchook\include\distorm.h" />
@@ -602,6 +604,7 @@
     <ClInclude Include="src\features\helpers\draw_utilities.hpp" />
     <ClInclude Include="src\features\helpers\post_processing.hpp" />
     <ClInclude Include="src\features\movement\bunnyhop.hpp" />
+    <ClInclude Include="src\features\triggerbot\triggerbot.hpp" />
     <ClInclude Include="src\gamedata\gamedata.hpp" />
     <ClInclude Include="src\game\state.hpp" />
     <ClInclude Include="src\menu\menu.hpp" />
@@ -637,6 +640,7 @@
     <ClInclude Include="src\sdk\source-sdk\classes\cutlvector.hpp" />
     <ClInclude Include="src\sdk\source-sdk\classes\c_attributecontainer.hpp" />
     <ClInclude Include="src\sdk\source-sdk\classes\cmaterial2.hpp" />
+    <ClInclude Include="src\sdk\source-sdk\classes\c_baseplayerweapon.hpp" />
     <ClInclude Include="src\sdk\source-sdk\classes\econ\ceconitem.hpp" />
     <ClInclude Include="src\sdk\source-sdk\classes\econ\ceconitemdefinition.hpp" />
     <ClInclude Include="src\sdk\source-sdk\classes\econ\ceconitemschema.hpp" />
@@ -666,6 +670,7 @@
     <ClInclude Include="src\sdk\source-sdk\classes\gcsdk\cgcclient.hpp" />
     <ClInclude Include="src\sdk\source-sdk\classes\gcsdk\cgcclientsystem.hpp" />
     <ClInclude Include="src\sdk\source-sdk\classes\types\cglobalvarsbase.hpp" />
+    <ClInclude Include="src\sdk\source-sdk\classes\types\c_trace.hpp" />
     <ClInclude Include="src\sdk\source-sdk\interfaces\ccvar.hpp" />
     <ClInclude Include="src\sdk\source-sdk\interfaces\cengineclient.hpp" />
     <ClInclude Include="src\sdk\source-sdk\interfaces\cgameeventmanager.hpp" />

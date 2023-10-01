@@ -84,6 +84,7 @@ namespace os2 {
     inline void* MouseInputEnabled;
     inline void* GetMatricesForView;
     inline void* LevelInit;
+    inline void* EngineTrace;
 
     inline void*(__thiscall* GetBaseEntity)(void*, int);
     inline int(__thiscall* GetHighestEntityIndex)(void*, int*);
@@ -129,7 +130,13 @@ namespace os2 {
     inline int(__stdcall* SDL_SetWindowGrab)(void*, int);
     inline int(__stdcall* SDL_WarpMouseInWindow)(void*, float, float);
 
-    inline os2::sdk::CWeaponCSBaseVData*(__fastcall* GetWeaponData)(
+    // Tracing
+    inline std::uint64_t(__fastcall* GetSurfaceData)(void*);
+    inline std::uint32_t(__fastcall* GetEntityHandle)(void*);
+    inline bool(__fastcall* TraceShape)(void*, void*, os2::sdk::Vector*,
+                                        os2::sdk::Vector*, void*, void*);
+
+    inline os2::sdk::CCSWeaponBaseVData*(__fastcall* GetWeaponData)(
         os2::sdk::C_EconItemView*);
 
     inline os2::sdk::CCSGOInput* pCSGOInput;
