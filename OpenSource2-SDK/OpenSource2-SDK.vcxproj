@@ -159,6 +159,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <CompileAsManaged>
       </CompileAsManaged>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
