@@ -1,14 +1,18 @@
 #include "game_hooks.hpp"
 
 #include "../../game/state.hpp"
-#include "../../menu/menu.hpp"
 #include "../../gamedata/gamedata.hpp"
+#include "../../menu/menu.hpp"
+#include "../../sdk/hooks/hooks.hpp"
 #include "../features.hpp"
 
 using namespace Game;
 using namespace os2::sdk;
 
 enum class MoveType { NOCLIP = 8, LADDER = 9 };
+
+#define SHUTTING_DOWN_MACRO(fn) \
+  if (os2::hooks::g_isShuttingDown) return fn
 
 template <class T>
 void ResolveFromAddress(std::uint64_t address, T& out,
@@ -26,6 +30,8 @@ void ResolveFromAddress(std::uint64_t address, T& out,
 }
 
 static bool __fastcall Hooks::MouseInputEnabled(void* rcx) {
+  SHUTTING_DOWN_MACRO(CHooks::MouseInputEnabled(rcx));
+
   if (os2::menu::IsOpen()) return false;
   return CHooks::MouseInputEnabled(rcx);
 }
@@ -35,9 +41,12 @@ static void __fastcall Hooks::GetMatricesForView(void* rcx, void* view,
                                                  VMatrix* pViewToProjection,
                                                  VMatrix* pWorldToProjection,
                                                  VMatrix* pWorldToPixels) {
-  CHooks::GetMatricesForView(rcx, view, pWorldToView,
-                                           pViewToProjection,
-                                           pWorldToProjection, pWorldToPixels);
+  SHUTTING_DOWN_MACRO(
+      CHooks::GetMatricesForView(rcx, view, pWorldToView, pViewToProjection,
+                                 pWorldToProjection, pWorldToPixels));
+
+  CHooks::GetMatricesForView(rcx, view, pWorldToView, pViewToProjection,
+                             pWorldToProjection, pWorldToPixels);
 
   // Provide data for the math.
   os2::math::UpdateViewMatrix(pWorldToProjection);
@@ -46,17 +55,29 @@ static void __fastcall Hooks::GetMatricesForView(void* rcx, void* view,
   gameFeatures->esp->CalculateBoundingBoxes();
 }
 
-static void* __fastcall Hooks::OnAddEntity(void* rcx, CEntityInstance* pInstance, CHandle hHandle) {
+static void* __fastcall Hooks::OnAddEntity(void* rcx,
+                                           CEntityInstance* pInstance,
+                                           CHandle hHandle) {
+  SHUTTING_DOWN_MACRO(CHooks::OnAddEntity(rcx, pInstance, hHandle));
+
   Data::g_pGameData->OnAddEntity(pInstance, hHandle);
   return CHooks::OnAddEntity(rcx, pInstance, hHandle);
 }
 
-static void* __fastcall Hooks::OnRemoveEntity(void* rcx, CEntityInstance* pInstance, CHandle hHandle) {
+static void* __fastcall Hooks::OnRemoveEntity(void* rcx,
+                                              CEntityInstance* pInstance,
+                                              CHandle hHandle) {
+  SHUTTING_DOWN_MACRO(CHooks::OnRemoveEntity(rcx, pInstance, hHandle));
+
   Data::g_pGameData->OnRemoveEntity(pInstance, hHandle);
   return CHooks::OnRemoveEntity(rcx, pInstance, hHandle);
 }
 
-static void __fastcall Hooks::CreateMove(CCSGOInput* input, const std::int32_t slot, const bool active) {
+static void __fastcall Hooks::CreateMove(CCSGOInput* input,
+                                         const std::int32_t slot,
+                                         const bool active) {
+  SHUTTING_DOWN_MACRO(CHooks::CreateMove(input, slot, active));
+
   CHooks::CreateMove(input, slot, active);
 
   CUserCmd* cmd = input->get_user_cmd();
@@ -77,17 +98,24 @@ static void __fastcall Hooks::CreateMove(CCSGOInput* input, const std::int32_t s
   gameFeatures->OnCreateMove(input, cmd, view_angles);
 }
 
-static void __fastcall Hooks::FrameStageNotify(void* rcx, const std::int32_t stage) {
+static void __fastcall Hooks::FrameStageNotify(void* rcx,
+                                               const std::int32_t stage) {
+  SHUTTING_DOWN_MACRO(CHooks::FrameStageNotify(rcx, stage));
+
   State::LocalController = CGameEntitySystem::GetLocalPlayerController();
-  State::LocalPawn = State::LocalController != nullptr
-                         ? State::LocalController->m_hPawn().Get<C_CSPlayerPawn>()
-                         : nullptr;
+  State::LocalPawn =
+      State::LocalController != nullptr
+          ? State::LocalController->m_hPawn().Get<C_CSPlayerPawn>()
+          : nullptr;
 
   CHooks::FrameStageNotify(rcx, stage);
 }
 
 static __int64 __fastcall Hooks::LevelInit(void* rcx) {
-  os2::fn::GlobalVarsAddress = os2::module::client->FindPattern(GLOBAL_VARS).Abs().Address();
+  SHUTTING_DOWN_MACRO(CHooks::LevelInit(rcx));
+
+  os2::fn::GlobalVarsAddress =
+      os2::module::client->FindPattern(GLOBAL_VARS).Abs().Address();
 
   ResolveFromAddress(os2::fn::GlobalVarsAddress, State::GlobalVars, true);
 
