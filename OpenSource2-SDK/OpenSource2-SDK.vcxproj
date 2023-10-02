@@ -199,6 +199,7 @@
     <ClCompile Include="src\entrypoint\OpenSource2SDK.cpp" />
     <ClCompile Include="src\features\aim_enhancement\recoil_control.cpp" />
     <ClCompile Include="src\features\esp\esp.cpp" />
+    <ClCompile Include="src\features\features.cpp" />
     <ClCompile Include="src\features\game_hooks\game_hooks.cpp" />
     <ClCompile Include="src\features\helpers\draw_utilities.cpp" />
     <ClCompile Include="src\features\helpers\post_processing.cpp" />
@@ -595,6 +596,7 @@
     <ClInclude Include="resources\fonts\icons\icons_mdi.hpp" />
     <ClInclude Include="resources\fonts\icons\mdi_font.hpp" />
     <ClInclude Include="resources\fonts\libertad_font.hpp" />
+    <ClInclude Include="resources\fonts\red_hat_display.hpp" />
     <ClInclude Include="src\entrypoint\OpenSource2SDK.hpp" />
     <ClInclude Include="src\features\aim_enhancement\recoil_control.hpp" />
     <ClInclude Include="src\features\esp\esp.hpp" />

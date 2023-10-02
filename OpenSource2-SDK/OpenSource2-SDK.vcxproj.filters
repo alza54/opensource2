@@ -389,6 +389,9 @@
     <ClCompile Include="src\sdk\source-sdk\classes\types\c_trace.cpp">
       <Filter>Project Files\sdk\source-sdk\classes\types</Filter>
     </ClCompile>
+    <ClCompile Include="src\features\features.cpp">
+      <Filter>Project Files\features</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\sdk\utilities\static_string.hpp">
@@ -1738,6 +1741,9 @@
     </ClInclude>
     <ClInclude Include="src\sdk\source-sdk\classes\c_baseplayerweapon.hpp">
       <Filter>Project Files\sdk\source-sdk\classes\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="resources\fonts\red_hat_display.hpp">
+      <Filter>Resource Files\Fonts</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

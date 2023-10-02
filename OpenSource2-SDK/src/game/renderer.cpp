@@ -6,6 +6,7 @@
 
 #include <fonts/cartograph_font.hpp>
 #include <fonts/libertad_font.hpp>
+#include <fonts/red_hat_display.hpp>
 
 #include <fonts/icons/IconsMaterialDesignIcons.h>
 #include <fonts/icons/mdi_font.hpp>
@@ -56,6 +57,10 @@ void OpenSource2_PrepareFonts() {
   cfg.FontBuilderFlags = 0;
   cfg.SizePixels = 26.f;
 
+  ImFontConfig cfg_default{};
+  cfg.MergeMode = false;
+  cfg.FontBuilderFlags = 0;
+
   ImFontConfig icons_config{};
   icons_config.MergeMode = true;
   icons_config.PixelSnapH = true;
@@ -64,9 +69,18 @@ void OpenSource2_PrepareFonts() {
   static const ImWchar icons_ranges[] = {ICON_MIN_MDI, ICON_MAX_MDI, 0};
 
   IO.Fonts->Clear();
+  os2::menu::fonts::red_hat_display =
+      IO.Fonts->AddFontFromMemoryCompressedBase85TTF(
+          red_hat_display_compressed_data_base85, 21.f, &cfg_default,
+          IO.Fonts->GetGlyphRangesDefault());
+  os2::menu::fonts::red_hat_display_large =
+      IO.Fonts->AddFontFromMemoryCompressedBase85TTF(
+          red_hat_display_compressed_data_base85, 28.f, &cfg_default,
+          IO.Fonts->GetGlyphRangesDefault());
   os2::menu::fonts::libertad_mono =
       IO.Fonts->AddFontFromMemoryCompressedBase85TTF(
-          LibertadMono_compressed_data_base85, 20.f);
+          LibertadMono_compressed_data_base85, 20.f, &cfg_default,
+          IO.Fonts->GetGlyphRangesDefault());
   os2::menu::fonts::cartograph = IO.Fonts->AddFontFromMemoryCompressedBase85TTF(
       Cartograph_compressed_data_base85, 26.f, &cfg,
       IO.Fonts->GetGlyphRangesDefault());

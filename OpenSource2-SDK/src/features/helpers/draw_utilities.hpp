@@ -3,14 +3,14 @@
 // WIP
 
 #define IMGUI_DEFINE_MATH_OPERATORS
-#include <imgui.h>
-
+#include <DirectXMath.h>
 #include <d3d11.h>
 #include <dxgi1_2.h>
+#include <imgui.h>
+
+#include <algorithm>
 #include <exception>
 #include <memory>
-#include <algorithm>
-#include <DirectXMath.h>
 
 #include "../../sdk/shaders/build/gaussian_blur.hpp"
 
@@ -22,16 +22,14 @@ class DrawUtilities {
   }
 
   static void initialise(ID3D11Device* pD3D11Device,
-    ID3D11DeviceContext* pD3D11DeviceContext) {
+                         ID3D11DeviceContext* pD3D11DeviceContext) {
     instance().Initialise(pD3D11Device, pD3D11DeviceContext);
   }
 
-  static void destroy() {
-    instance().Destroy();
-  }
+  static void destroy() { instance().Destroy(); }
 
   static void draw(ImDrawList* drawList, const ImVec2& p_min,
-    const ImVec2& p_max, float alpha) noexcept {
+                   const ImVec2& p_max, float alpha) noexcept {
     instance().draw(drawList, p_min, p_max, alpha);
   }
 
@@ -39,11 +37,13 @@ class DrawUtilities {
     instance().BeginBlur();
   }
 
-  static void perform_horizontal_blur(const ImDrawList*, const ImDrawCmd*) noexcept {
+  static void perform_horizontal_blur(const ImDrawList*,
+                                      const ImDrawCmd*) noexcept {
     instance().PerformHorizontalBlur();
   }
 
-  static void perform_vertical_blur(const ImDrawList*, const ImDrawCmd*) noexcept {
+  static void perform_vertical_blur(const ImDrawList*,
+                                    const ImDrawCmd*) noexcept {
     instance().PerformVerticalBlur();
   }
 
