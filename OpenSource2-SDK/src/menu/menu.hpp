@@ -26,9 +26,11 @@ class ImStyleCache {
 
 namespace os2::menu {
   inline namespace fonts {
-    inline static ImFont* libertad_mono = nullptr;
-    inline static ImFont* cartograph = nullptr;
-    inline static ImFont* mdi = nullptr;
+    inline ImFont* red_hat_display = nullptr;
+    inline ImFont* red_hat_display_large = nullptr;
+    inline ImFont* libertad_mono = nullptr;
+    inline ImFont* cartograph = nullptr;
+    inline ImFont* mdi = nullptr;
   }  // namespace fonts
 
   bool ShowUnloadPopup();

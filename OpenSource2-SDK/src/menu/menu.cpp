@@ -28,6 +28,8 @@ bool os2::menu::ShowUnloadPopup() {
     ImGui::SameLine();
 
     if (ImGui::Button("No")) {
+      ImGui::EndPopup();
+
       return false;
     }
 
