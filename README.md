@@ -22,11 +22,26 @@ The software has been tested on [build ID 12321656 released on 9/29/2023](https:
 * The software is in very early development stage, any contributions are welcomed.
 
 ### Is it undetected?
-* If I had to guess, I'd say yes.
-* For now.
-* However you don't have any guarantee.
+* Don't treat it as a cheat to compile.
 * You should always modify the SDK, never use cheats built-in, as they are examples, from which you can take a inspiration.
+
+### Changelog
+
+##### v0.3.0 (First Stable Release)
+* SDK: Introduced TraceSmoke function (returns smoke density between two lines).
+* SDK: fixed unload crash.
+* SDK: fixed unload pop-up "No" button exception.
+* Added new font: Red Hat Display Regular.
+* Fixed fonts allocation.
+* Trigger Bot: introduced "Max Flash Intensity" filter
+* Trigger Bot: introduced "Max Smoke Density" filter
+* Trigger Bot: introduced "Scoped Only" filter for sniper weapons.
+* Trigger Bot: corrected Trace Line end vector by the aim punch (recoil).
 
 # Screenshots
 
+### v0.3.0
+![Cheat SDK GUI](https://github.com/alza54/opensource2/blob/main/media/gui-v0.3.0.png?raw=true)
+
+### v0.2.0
 ![Cheat SDK GUI](https://github.com/alza54/opensource2/blob/main/media/gui-v0.2.0.png?raw=true)
