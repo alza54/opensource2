@@ -7,16 +7,19 @@ using namespace Game;
 using namespace os2::sdk;
 
 void BunnyHop::OnRender() noexcept { BunnyHop::RenderUI(); }
- 
+
 void BunnyHop::RenderUI() noexcept {
   if (DrawWatermark()) {
+    ImGui::PushFont(os2::menu::fonts::libertad_mono);
+
     ImGuiWindowFlags windowFlags =
         ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar |
         ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize;
     if (!os2::menu::IsOpen()) windowFlags |= ImGuiWindowFlags_NoInputs;
 
     ImGui::SetNextWindowBgAlpha(0.3f);
-    ImGui::SetNextWindowPos({ ImGui::GetIO().DisplaySize.x - 300.f, 24.f }, ImGuiCond_Once);
+    ImGui::SetNextWindowPos({ImGui::GetIO().DisplaySize.x - 300.f, 24.f},
+                            ImGuiCond_Once);
     ImGui::Begin("Watermark", nullptr, windowFlags);
 
     if (os2::iface::pEngine->IsInGame()) {
@@ -29,6 +32,8 @@ void BunnyHop::RenderUI() noexcept {
       ImGui::Text("OpenSource2 | Not In Game");
     }
 
+    ImGui::PopFont();
+
     ImGui::End();
   }
 
@@ -36,10 +41,7 @@ void BunnyHop::RenderUI() noexcept {
 
   ImGui::PushFont(os2::menu::fonts::libertad_mono);
 
-  ImGui::SetNextWindowSize({700, 0});
-
-  ImGui::Begin(this->Name(), &DrawGUI(),
-               ImGuiWindowFlags_AlwaysAutoResize);
+  ImGui::Begin(this->Name(), &DrawGUI(), ImGuiWindowFlags_AlwaysAutoResize);
 
   ImGui::Checkbox("Enable Auto BunnyHop", &Enabled());
   ImGui::Checkbox("Draw Watermark", &DrawWatermark());

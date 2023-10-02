@@ -14,7 +14,8 @@ class BunnyHop : public Feature {
   void RenderUI() noexcept;
 
   void OnRender() noexcept override;
-  void OnCreateMove(os2::sdk::CCSGOInput* pCsgoInput, os2::sdk::CUserCmd* pUserCmd,
+  void OnCreateMove(os2::sdk::CCSGOInput* pCsgoInput,
+                    os2::sdk::CUserCmd* pUserCmd,
                     glm::vec3& view_angles) noexcept override;
 
   nlohmann::json ToJson() const override {
@@ -39,5 +40,5 @@ class BunnyHop : public Feature {
     int Perfection = 100;
   } config_;
 
-   bool bWasLastTimeOnGround;
+  bool bWasLastTimeOnGround;
 };
