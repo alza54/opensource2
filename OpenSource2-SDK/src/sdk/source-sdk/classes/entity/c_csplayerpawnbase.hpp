@@ -19,11 +19,16 @@ namespace os2::sdk {
                  "m_pViewModelServices", CCSPlayer_ViewModelServices*);
     SCHEMA_FIELD(m_flFlashDuration, "C_CSPlayerPawnBase", "m_flFlashDuration",
                  float);
+    SCHEMA_FIELD(m_flFlashMaxAlpha, "C_CSPlayerPawnBase", "m_flFlashMaxAlpha",
+                 float);
+    SCHEMA_FIELD(m_flFlashBangTime, "C_CSPlayerPawnBase", "m_flFlashBangTime",
+                 float);
     SCHEMA_FIELD(m_entitySpottedState, "C_CSPlayerPawnBase",
                  "m_entitySpottedState", EntitySpottedState_t);
     SCHEMA_FIELD(m_bHasMovedSinceSpawn, "C_CSPlayerPawnBase",
                  "m_bHasMovedSinceSpawn", bool);
     SCHEMA_FIELD(m_szLastPlaceName, "C_CSPlayerPawnBase", "m_szLastPlaceName",
                  char[18]);
+    SCHEMA_FIELD(m_bIsScoped, "C_CSPlayerPawnBase", "m_bIsScoped", bool);
   };
 };  // namespace os2::sdk
