@@ -170,6 +170,11 @@ namespace os2::sdk {
       return rv;
     }
 
+    template <typename T>
+    T GetOffset(uint64_t offset) {
+      return reinterpret_cast<T>(this->m_start + offset);
+    }
+
     const char* GetName() const { return this->m_name; }
 
     bool IsLoaded() const { return this->m_handle != 0; }
