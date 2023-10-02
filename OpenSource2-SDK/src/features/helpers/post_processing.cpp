@@ -33,7 +33,8 @@ static inline IDXGISwapChain* pSwapChain;
 }
 
 static void copyBackbufferToTexture(ID3D11Texture2D* texture) noexcept {
-  pSwapChain->GetBuffer(0, __uuidof(texture), reinterpret_cast<void**>(&texture));
+  pSwapChain->GetBuffer(0, __uuidof(texture),
+                        reinterpret_cast<void**>(&texture));
 }
 
 static void setRenderTarget(ID3D11Texture2D* rtTexture) noexcept {
@@ -88,7 +89,7 @@ class BlurEffect {
   ID3D11Texture2D* pBlurTexture2 = nullptr;
   ID3D11RasterizerState* pRasterStateWithScissorDisabled = nullptr;
   ID3D11RasterizerState* pOriginalRasterState = nullptr;
-  ID3D11RenderTargetView* pBlurTexture1RTV= nullptr;
+  ID3D11RenderTargetView* pBlurTexture1RTV = nullptr;
   ID3D11RenderTargetView* pBlurTexture2RTV = nullptr;
   ID3D11Buffer* pVSConstantBuffer = nullptr;
 
@@ -150,10 +151,10 @@ class BlurEffect {
 
     if (!pBlurTexture1)
       pBlurTexture1 = createTexture(backbufferWidth / blurDownsample,
-                                   backbufferHeight / blurDownsample);
+                                    backbufferHeight / blurDownsample);
     if (!pBlurTexture2)
       pBlurTexture2 = createTexture(backbufferWidth / blurDownsample,
-                                   backbufferHeight / blurDownsample);
+                                    backbufferHeight / blurDownsample);
 
     D3D11_RENDER_TARGET_VIEW_DESC rtvDesc = {};
     rtvDesc.Format =
@@ -322,9 +323,7 @@ void PostProcessing::clearBlurTextures() noexcept {
   BlurEffect::clearTextures();
 }
 
-void PostProcessing::onDeviceReset() noexcept {
-  BlurEffect::clearTextures();
-}
+void PostProcessing::onDeviceReset() noexcept { BlurEffect::clearTextures(); }
 
 void PostProcessing::performFullscreenBlur(ImDrawList* drawList,
                                            float alpha) noexcept {

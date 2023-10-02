@@ -4,8 +4,7 @@
 
 class RecoilControl : public Feature {
  public:
-  RecoilControl()
-      : Feature("Recoil Control") {}
+  RecoilControl() : Feature("Recoil Control") {}
 
   CONFIG_GETTER(bool, Enabled)
   CONFIG_GETTER(bool, DrawGUI)
@@ -20,12 +19,10 @@ class RecoilControl : public Feature {
                     glm::vec3& view_angles) noexcept override;
 
   nlohmann::json ToJson() const override {
-    return {
-      {("enabled"), config_.Enabled},
-      {("draw_gui"), config_.DrawGUI},
-      {("perfection_x"), config_.PerfectionX},
-      {("perfection_y"), config_.PerfectionY}
-    };
+    return {{("enabled"), config_.Enabled},
+            {("draw_gui"), config_.DrawGUI},
+            {("perfection_x"), config_.PerfectionX},
+            {("perfection_y"), config_.PerfectionY}};
   }
 
   void FromJson(const nlohmann::json& j) override {

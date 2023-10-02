@@ -1,5 +1,5 @@
-#include <sstream>
 #include <iomanip>
+#include <sstream>
 
 #include "../../sdk/interfaces/interfaces.hpp"
 
@@ -12,7 +12,6 @@
 #include "../../game/state.hpp"
 #include "../../gamedata/gamedata.hpp"
 #include "../../menu/menu.hpp"
-
 #include "esp.hpp"
 
 #define ESP_WINDOW_WIDTH (const unsigned int)512
@@ -68,7 +67,8 @@ void ESP::RenderUI() noexcept {
   ImGui::SliderFloat("FOV", &ESP::AimFOV(), 0.f, 90.f, "%.1f");
 
   RenderShadow(ImGui::GetWindowPos(), ImGui::GetWindowSize().x,
-               ImGui::GetWindowSize().y, ImGui::GetStyle().WindowRounding, 4, 6);
+               ImGui::GetWindowSize().y, ImGui::GetStyle().WindowRounding, 4,
+               6);
 
   ImGui::PopFont();
 
@@ -91,9 +91,10 @@ void ESP::OnRender() noexcept {
 
     float radius =
         glm::tan(glm::radians(AimFOV()) / 2.f) /
-        glm::tan(glm::radians(
+        glm::tan(
+            glm::radians(
                 (float)Game::State::LocalPawn->m_pCameraServices()->m_iFOV()) /
-                 2.f) *
+            2.f) *
         screen_size.x;
 
     g_pGameData->DrawList()->AddCircleFilled(
@@ -105,8 +106,7 @@ void ESP::OnRender() noexcept {
         ImColor(0, 0, 0, 60));
   }
 
-  const std::lock_guard<std::mutex> guard{
-      g_pGameData->GetEntitiesMutex()};
+  const std::lock_guard<std::mutex> guard{g_pGameData->GetEntitiesMutex()};
 
   for (const auto& it : g_pGameData->GetEntities()) {
     if (!it.shouldDrawEsp) continue;
@@ -154,7 +154,6 @@ void ESP::CalculateBoundingBoxes() noexcept {
             ((CCSPlayerController*)pEntity)->m_hPawn().Get<C_CSPlayerPawn>();
         if (pPlayerPawn)
           it.shouldDrawEsp = pPlayerPawn->GetBoundingBox(it.boundingBox, false);
-
       } break;
       case EEntityType::BASE_WEAPON:
         it.shouldDrawEsp = pEntity->GetBoundingBox(it.boundingBox, true);
@@ -201,7 +200,7 @@ void ESP::RenderSkeleton(C_CSPlayerPawn* pPawn) noexcept {
             os2::sdk::Vector(model_state.bones[i].position.x,
                              model_state.bones[i].position.y,
                              model_state.bones[i].position.z),
-                              bone_screen_position) &&
+            bone_screen_position) &&
         os2::math::WorldToScreenV1(
             os2::sdk::Vector(model_state.bones[bone_parent_index].position.x,
                              model_state.bones[bone_parent_index].position.y,
@@ -216,7 +215,7 @@ void ESP::RenderSkeleton(C_CSPlayerPawn* pPawn) noexcept {
 }
 
 void ESP::RenderPlayerESP(CCSPlayerController* pPlayerController,
-                            const BBox_t& bBox) noexcept {
+                          const BBox_t& bBox) noexcept {
   if (!pPlayerController->m_bPawnIsAlive()) return;
 
   C_CSPlayerPawn* pPawn = pPlayerController->m_hPawn().Get<C_CSPlayerPawn>();
@@ -243,9 +242,9 @@ void ESP::RenderPlayerESP(CCSPlayerController* pPlayerController,
     g_pGameData->DrawList()->AddRect(
         min + ImVec2{1.f, 1.f}, max - ImVec2{1.f, 1.f}, IM_COL32(0, 0, 0, 255));
     g_pGameData->DrawList()->AddRect(min, max,
-                                   isLocalPlayer ? IM_COL32(52, 131, 235, 255)
-                                   : isEnemy     ? IM_COL32(255, 0, 0, 255)
-                                                 : IM_COL32(0, 255, 0, 255));
+                                     isLocalPlayer ? IM_COL32(52, 131, 235, 255)
+                                     : isEnemy     ? IM_COL32(255, 0, 0, 255)
+                                                   : IM_COL32(0, 255, 0, 255));
   }
 
   if (DrawPlayerName()) {
@@ -255,9 +254,9 @@ void ESP::RenderPlayerESP(CCSPlayerController* pPlayerController,
       const ImVec2 textPos = ImFloor(
           {(min.x + max.x - textSize.x) / 2.f, min.y - textSize.y - 2.f});
       g_pGameData->DrawList()->AddText(textPos + ImVec2{1, 1},
-                                     IM_COL32(0, 0, 0, 255), szName);
+                                       IM_COL32(0, 0, 0, 255), szName);
       g_pGameData->DrawList()->AddText(textPos, IM_COL32(255, 255, 255, 255),
-                                     szName);
+                                       szName);
     }
   }
 
@@ -347,10 +346,9 @@ void ESP::RenderWeaponName(C_CSWeaponBase* pWeapon,
       ImFloor({(min.x + max.x - textSize.x) / 2.f, max.y + textSize.y - 12.f});
 
   g_pGameData->DrawList()->AddText(textPos + ImVec2{1, 1},
-                                   IM_COL32(0, 0, 0, 255),
-                                 szWeaponName);
+                                   IM_COL32(0, 0, 0, 255), szWeaponName);
   g_pGameData->DrawList()->AddText(textPos, IM_COL32(255, 255, 255, 255),
-                                 szWeaponName);
+                                   szWeaponName);
 }
 
 void ESP::RenderChickenESP(C_Chicken* pChicken, const BBox_t& bBox) noexcept {
@@ -392,8 +390,8 @@ void ESP::RenderShadow(ImVec2 position, float width, float height,
   }
 }
 
-void ESP::RenderCenteredTextWithOutline(ImVec2 position, float width, float height,
-                                        std::string text,
+void ESP::RenderCenteredTextWithOutline(ImVec2 position, float width,
+                                        float height, std::string text,
                                         unsigned int textColor,
                                         unsigned int textBorderColor,
                                         float offset) noexcept {
@@ -436,8 +434,9 @@ void ESP::RenderProgressBar(ImVec2 position, float width, unsigned int color,
   const int height = 20;        // This can be adjusted based on your preference
   const float rounding = 4.0f;  // Corner rounding
   const int borderWidth = 1;    // This can be adjusted
-  const auto borderColor = IM_COL32(220, 220, 220, 255); // Light gray color for border
-  const auto bgColor = IM_COL32(50, 50, 50, 255); // Dark gray for background
+  const auto borderColor =
+      IM_COL32(220, 220, 220, 255);  // Light gray color for border
+  const auto bgColor = IM_COL32(50, 50, 50, 255);  // Dark gray for background
 
   if (shadow) RenderShadow(position, width, height, rounding, 4, 6);
 
@@ -471,7 +470,8 @@ void ESP::RenderPlantedC4(C_PlantedC4* pBomb, const BBox_t& bBox) noexcept {
   g_pGameData->DrawList()->AddRect(min + vec1, max - vec1,
                                    IM_COL32(255, 0, 0, 255));
 
-  const float blowTime = pBomb->m_flC4Blow() - Game::State::GlobalVars->current_time;
+  const float blowTime =
+      pBomb->m_flC4Blow() - Game::State::GlobalVars->current_time;
 
   const ImVec2 drawPosition = {(min.x + max.x - bBox.w) / 2.f, max.y + 20 + 6};
 
@@ -498,8 +498,7 @@ void ESP::RenderPlantedC4(C_PlantedC4* pBomb, const BBox_t& bBox) noexcept {
     if (!os2::menu::IsOpen()) windowFlags |= ImGuiWindowFlags_NoInputs;
 
     ImGui::SetNextWindowBgAlpha(0.3f);
-    ImGui::SetNextWindowPos({24.f, 24.f},
-                            ImGuiCond_Once);
+    ImGui::SetNextWindowPos({24.f, 24.f}, ImGuiCond_Once);
     ImGui::SetNextWindowSize({256.f, 64.f});
     ImGui::Begin("Bomb Watermark", nullptr, windowFlags);
 
@@ -521,12 +520,13 @@ void ESP::RenderPlantedC4(C_PlantedC4* pBomb, const BBox_t& bBox) noexcept {
         ss << pDefuser->m_sSanitizedPlayerName() << " defuses the bomb and"
            << (canDefuse ? "can" : "can't") << " defuse";
 
-        RenderCenteredTextWithOutline(window_pos, win_x, win_y, ss.str().c_str());
+        RenderCenteredTextWithOutline(window_pos, win_x, win_y,
+                                      ss.str().c_str());
       }
     } else {
       std::ostringstream ss;
-      ss << std::fixed << std::setprecision(1) << "Bomb explodes in " << blowTime
-                              << " s";
+      ss << std::fixed << std::setprecision(1) << "Bomb explodes in "
+         << blowTime << " s";
 
       ImU32 color = BombFadeColor(blowTime, pBomb->m_flTimerLength());
       RenderCenteredTextWithOutline(window_pos, win_x, win_y, ss.str().c_str(),

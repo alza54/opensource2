@@ -2,13 +2,12 @@
 
 #include <iostream>
 #include <memory>
-#include <type_traits>
-
 #include <nlohmann/single_include/nlohmann/json.hpp>
 #include <nlohmann/single_include/nlohmann/json_fwd.hpp>
+#include <type_traits>
 
-#include "../sdk/memory/memory.hpp"
 #include "../sdk/interfaces/interfaces.hpp"
+#include "../sdk/memory/memory.hpp"
 
 class Feature {
  private:

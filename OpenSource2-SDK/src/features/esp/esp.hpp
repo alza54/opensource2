@@ -38,7 +38,7 @@ class ESP : public Feature {
   void OnRender() noexcept override;
 
   void OnCreateMove(os2::sdk::CCSGOInput*, os2::sdk::CUserCmd*,
-                            glm::vec3&) noexcept override {}
+                    glm::vec3&) noexcept override {}
 
   void CalculateBoundingBoxes() noexcept;
 

@@ -216,7 +216,7 @@ bool DrawUtilities::InitialiseVSConstantBuffer() {
 }
 
 void DrawUtilities::SetOffscreenRenderTarget() noexcept {
-  // 
+  //
 }
 
 ID3D11ShaderResourceView*
@@ -379,8 +379,8 @@ void DrawUtilities::EndBlur() noexcept {
   printf("PerformVerticalBlur Post\n");
 }
 
-void DrawUtilities::DrawBlur(ImDrawList* drawList, const ImVec2& p_min, const ImVec2& p_max,
-              float alpha) noexcept {
+void DrawUtilities::DrawBlur(ImDrawList* drawList, const ImVec2& p_min,
+                             const ImVec2& p_max, float alpha) noexcept {
   if (!IsReady()) return;
 
   drawList->AddCallback(&begin_blur, nullptr);
