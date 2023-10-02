@@ -1,5 +1,12 @@
 #pragma once
 
+#include <imgui/imgui.h>
+
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <variant>
+
 #include "../feature.hpp"
 
 class TriggerBot : public Feature {
@@ -9,6 +16,9 @@ class TriggerBot : public Feature {
   CONFIG_GETTER(bool, Enabled)
   CONFIG_GETTER(bool, DrawGUI)
   CONFIG_GETTER(bool, EnableTeamFire)
+  CONFIG_GETTER(float, MaxFlashIntensity)
+  CONFIG_GETTER(float, MaxSmokeDensity)
+  CONFIG_GETTER(bool, ScopedOnly)
 
   void RenderUI() noexcept;
 
@@ -17,16 +27,25 @@ class TriggerBot : public Feature {
                     os2::sdk::CUserCmd* pUserCmd,
                     glm::vec3& view_angles) noexcept override;
 
+  void DrawInfo(const std::string& input, __int64 index,
+                unsigned int text_color) noexcept;
+
   nlohmann::json ToJson() const override {
     return {{("enabled"), config_.Enabled},
             {("draw_gui"), config_.DrawGUI},
-            {("enable_team_fire"), config_.EnableTeamFire}};
+            {("enable_team_fire"), config_.EnableTeamFire},
+            {("max_flash_intensity"), config_.MaxFlashIntensity},
+            {("max_smoke_density"), config_.MaxSmokeDensity},
+            {("scoped_only", config_.ScopedOnly)}};
   }
 
   void FromJson(const nlohmann::json& j) override {
     config_.Enabled = j.at(("enabled")).get<bool>();
     config_.DrawGUI = j.at(("draw_gui")).get<bool>();
     config_.EnableTeamFire = j.at(("enable_team_fire")).get<bool>();
+    config_.MaxFlashIntensity = j.at(("max_flash_intensity")).get<float>();
+    config_.MaxSmokeDensity = j.at(("max_smoke_density")).get<float>();
+    config_.ScopedOnly = j.at(("scoped_only")).get<bool>();
   }
 
  private:
@@ -34,5 +53,13 @@ class TriggerBot : public Feature {
     bool Enabled = false;
     bool DrawGUI = false;
     bool EnableTeamFire = false;
+    float MaxFlashIntensity = 0.4f;
+    float MaxSmokeDensity = 0.3f;
+    bool ScopedOnly = true;
   } config_;
+
+  bool lock_vector = false;
+
+  std::vector<std::pair<std::string, unsigned int>>
+      displayed_info;
 };
