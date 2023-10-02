@@ -135,6 +135,7 @@ namespace os2 {
     inline std::uint32_t(__fastcall* GetEntityHandle)(void*);
     inline bool(__fastcall* TraceShape)(void*, void*, os2::sdk::Vector*,
                                         os2::sdk::Vector*, void*, void*);
+    inline float (__fastcall* TraceSmoke)(os2::sdk::Vector*, os2::sdk::Vector*, void* ptr);
 
     inline os2::sdk::CCSWeaponBaseVData*(__fastcall* GetWeaponData)(
         os2::sdk::C_EconItemView*);

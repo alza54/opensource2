@@ -151,6 +151,9 @@ void os2::memory::initialise() {
       .Dereference(1)
       .Get(FUNCTION_VARIABLE(EngineTrace));
 
+  os2::fn::TraceSmoke = os2::module::client->GetOffset<float(__fastcall*)(
+      os2::sdk::Vector*, os2::sdk::Vector*, void*)>(0x4C5910);
+
   os2::sdk::CModule sdl3(os2::memory::strings::sdl3_dll);
 
   // SDL Functions:
