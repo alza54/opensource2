@@ -27,6 +27,26 @@ The software has been tested on [build ID 12321656 released on 9/29/2023](https:
 
 ### Changelog
 
+#### v0.4.0 ("Everyday" Release)
+
+* **SDK**: Corrected indexes of ***CEngineClient*** after the game update.
+* **SDK**: Corrected ***C_TraceHitboxData*** struct.
+* **SDK**: introduced ***C_PointCamera*** schema.
+* **SDK / Bone System**: Introduced ***GetBoneName*** method. 
+* **SDK / CCSPlayer_CameraServices**: Corrected to the new implementation (no ``m_iFOV`` property anymore, ***CPlayer_CameraServices*** class instance pointer reachable now).
+* **SDK / CBasePlayerController**: extended implementation.
+* **SDK / m_szLastPlaceName**: this property got moved from ***C_CSPlayerPawnBase*** to ***C_CSPlayerPawn*** with the game update.
+* **SDK / C_BaseEntity**: added a boolean ``IsPointCamera()`` check to ***C_BaseEntity*** class.
+* **SDK**: Cleaned the code.
+* **Features**: Organized features with macros and dependency injection.
+* **Features / Drawing**: Introduced a (Function class instance) wrapper for the methods related to drawing on the screen.
+* **Features / Drawing**: Introduced a mutex lock for thread-safe rendering.
+* **Features / Drawing**: Introduced ***RenderArrowToAngle*** function.
+* **Math**: Introduced functions: ***ToAngle***, ***CalculateRelativeAngle***, ***CalculateFOV***, ***CalculateAngleRadians***, ***deg2rad***, ***FromAngle***.
+* **Features: TriggerBot**: For now removed the smoke check due to update. Introduced a function pattern signature for further investigation.
+* **Features: AimBot**: Introduced a collection of methods related with AimBot. For now renders ***Enemies List***.
+* **Features: FOV Changer**: FOV Changer with an option to choose different FOV for in-game view and scenes view (eg. match start animation).
+
 ##### v0.3.0 (First Stable Release)
 * SDK: Introduced TraceSmoke function (returns smoke density between two lines).
 * SDK: fixed unload crash.
@@ -39,6 +59,9 @@ The software has been tested on [build ID 12321656 released on 9/29/2023](https:
 * Trigger Bot: corrected Trace Line end vector by the aim punch (recoil).
 
 # Screenshots
+
+### v0.4.0
+![Cheat SDK GUI](https://github.com/alza54/opensource2/blob/main/media/gui-v0.4.0.png?raw=true)
 
 ### v0.3.0
 ![Cheat SDK GUI](https://github.com/alza54/opensource2/blob/main/media/gui-v0.3.0.png?raw=true)
