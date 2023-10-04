@@ -14,7 +14,6 @@
 #include "../menu/menu.hpp"
 #include "../features/features.hpp"
 
-#include "../sdk/config/config.hpp"
 #include "../sdk/hooks/hooks.hpp"
 
 #include "../gamedata/gamedata.hpp"

@@ -7,11 +7,10 @@
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
 
-#include <glm/trigonometric.hpp>
-
 #include "../../game/state.hpp"
 #include "../../gamedata/gamedata.hpp"
 #include "../../menu/menu.hpp"
+#include "../features.hpp"
 #include "esp.hpp"
 
 #define ESP_WINDOW_WIDTH (const unsigned int)512
@@ -63,12 +62,9 @@ void ESP::RenderUI() noexcept {
   ImGui::Checkbox("C4 Timer Text", &ESP::DrawBombTimerText());
   ImGui::Checkbox("C4 Timer Overlay", &ESP::DrawBombTimerOverlay());
 
-  ImGui::SeparatorText("Aim");
-  ImGui::SliderFloat("FOV", &ESP::AimFOV(), 0.f, 90.f, "%.1f");
-
-  RenderShadow(ImGui::GetWindowPos(), ImGui::GetWindowSize().x,
-               ImGui::GetWindowSize().y, ImGui::GetStyle().WindowRounding, 4,
-               6);
+  pFeatures->drawing->RenderShadow(
+      ImGui::GetWindowPos(), ImGui::GetWindowSize().x, ImGui::GetWindowSize().y,
+      ImGui::GetStyle().WindowRounding, 4, 6);
 
   ImGui::PopFont();
 
@@ -85,26 +81,6 @@ void ESP::OnRender() noexcept {
   if (!Game::State::LocalPawn) return;
 
   if (!Enabled()) return;
-
-  if (DrawAimFOV()) {
-    auto screen_size = os2::iface::pEngine->GetScreenSize();
-
-    float radius =
-        glm::tan(glm::radians(AimFOV()) / 2.f) /
-        glm::tan(
-            glm::radians(
-                (float)Game::State::LocalPawn->m_pCameraServices()->m_iFOV()) /
-            2.f) *
-        screen_size.x;
-
-    g_pGameData->DrawList()->AddCircleFilled(
-        {glm::floor(screen_size.x / 2), glm::floor(screen_size.y / 2)}, radius,
-        ImColor(0, 0, 0, 30));
-
-    g_pGameData->DrawList()->AddCircle(
-        {glm::floor(screen_size.x / 2), glm::floor(screen_size.y / 2)}, radius,
-        ImColor(0, 0, 0, 60));
-  }
 
   const std::lock_guard<std::mutex> guard{g_pGameData->GetEntitiesMutex()};
 
@@ -369,94 +345,6 @@ void ESP::RenderChickenESP(C_Chicken* pChicken, const BBox_t& bBox) noexcept {
   }
 }
 
-void ESP::RenderShadow(ImVec2 position, float width, float height,
-                       float rounding, int shadowOffset, int shadowLayers,
-                       unsigned int shadowColor) noexcept {
-  for (int i = 1; i <= shadowLayers; i++) {
-    // Compute new color by reducing the alpha component for each layer
-    unsigned int currentShadowColor =
-        (shadowColor & 0xFFFFFF00) |
-        (unsigned int)(((float)(shadowColor & 0xFF) *
-                        (1.0f - (i / (float)shadowLayers))));
-
-    // Expand the shadow size for each layer
-    float offsetX = shadowOffset * (i / (float)shadowLayers);
-    float offsetY = shadowOffset * (i / (float)shadowLayers);
-
-    g_pGameData->DrawList()->AddRectFilled(
-        ImVec2(position.x - offsetX, position.y + offsetY),
-        ImVec2(position.x + width + offsetX, position.y + height + offsetY),
-        currentShadowColor, rounding);
-  }
-}
-
-void ESP::RenderCenteredTextWithOutline(ImVec2 position, float width,
-                                        float height, std::string text,
-                                        unsigned int textColor,
-                                        unsigned int textBorderColor,
-                                        float offset) noexcept {
-  ImDrawList* drawList = g_pGameData->DrawList();
-
-  const char* szText = text.c_str();
-
-  ImGui::PushFont(os2::menu::fonts::cartograph);
-
-  // Calculate text size
-  ImVec2 textSizeVec = ImGui::CalcTextSize(szText);
-
-  // Compute position for centered text
-  ImVec2 textPos = ImVec2(position.x + (width - textSizeVec.x) * 0.5f,
-                          position.y + (height - textSizeVec.y) * 0.5f);
-
-  // Draw text outline/border
-  for (float x = -offset; x <= offset; x += offset) {
-    for (float y = -offset; y <= offset; y += offset) {
-      // Skip rendering at center since that's where the main text will be
-      if (x != 0.0f || y != 0.0f)
-        drawList->AddText(ImVec2(textPos.x + x, textPos.y + y), textBorderColor,
-                          szText);
-    }
-  }
-
-  // Draw the centered text
-  drawList->AddText(textPos, textColor, szText);
-
-  ImGui::PopFont();
-}
-
-void ESP::RenderProgressBar(ImVec2 position, float width, unsigned int color,
-                            float progress, bool shadow) noexcept {
-  // Ensure progress is between 0 and 1
-  progress = (progress < 0.0f) ? 0.0f : (progress > 1.0f) ? 1.0f : progress;
-
-  ImDrawList* drawList = g_pGameData->DrawList();
-
-  const int height = 20;        // This can be adjusted based on your preference
-  const float rounding = 4.0f;  // Corner rounding
-  const int borderWidth = 1;    // This can be adjusted
-  const auto borderColor =
-      IM_COL32(220, 220, 220, 255);  // Light gray color for border
-  const auto bgColor = IM_COL32(50, 50, 50, 255);  // Dark gray for background
-
-  if (shadow) RenderShadow(position, width, height, rounding, 4, 6);
-
-  // Background
-  drawList->AddRectFilled(position,
-                          ImVec2(position.x + width, position.y + height),
-                          bgColor, rounding);
-
-  // Progress
-  int progressWidth = static_cast<int>(progress * width);
-  drawList->AddRectFilled(
-      position, ImVec2(position.x + progressWidth, position.y + height), color,
-      rounding, ImDrawFlags_RoundCornersAll);
-
-  // Border
-  drawList->AddRect(position, ImVec2(position.x + width, position.y + height),
-                    borderColor, rounding, ImDrawFlags_RoundCornersAll,
-                    borderWidth);
-}
-
 void ESP::RenderPlantedC4(C_PlantedC4* pBomb, const BBox_t& bBox) noexcept {
   const ImVec2 min = {bBox.x, bBox.y};
   const ImVec2 max = {bBox.w, bBox.h};
@@ -470,16 +358,18 @@ void ESP::RenderPlantedC4(C_PlantedC4* pBomb, const BBox_t& bBox) noexcept {
   g_pGameData->DrawList()->AddRect(min + vec1, max - vec1,
                                    IM_COL32(255, 0, 0, 255));
 
+  const auto pDraw = pFeatures->drawing.get();
+
   const float blowTime =
       pBomb->m_flC4Blow() - Game::State::GlobalVars->current_time;
 
   const ImVec2 drawPosition = {(min.x + max.x - bBox.w) / 2.f, max.y + 20 + 6};
 
   if (DrawBombTimer()) {
-    const auto color = BombFadeColor(blowTime, pBomb->m_flTimerLength());
+    const auto color = pDraw->BombColorFade(blowTime, pBomb->m_flTimerLength());
 
-    RenderProgressBar({(min.x + max.x - 64.f) / 2.f, max.y + 20 + 6}, 72.f,
-                      color, blowTime / pBomb->m_flTimerLength());
+    pDraw->RenderProgressBar({(min.x + max.x - 64.f) / 2.f, max.y + 20 + 6},
+                             72.f, color, blowTime / pBomb->m_flTimerLength());
   }
 
   if (DrawBombTimerText()) {
@@ -488,7 +378,7 @@ void ESP::RenderPlantedC4(C_PlantedC4* pBomb, const BBox_t& bBox) noexcept {
 
     const auto szBlowTime = ss.str();
 
-    RenderCenteredTextWithOutline(drawPosition, bBox.w, 20, szBlowTime);
+    pDraw->RenderCenteredTextWithOutline(drawPosition, bBox.w, 20, szBlowTime);
   }
 
   if (DrawBombTimerOverlay()) {
@@ -509,61 +399,19 @@ void ESP::RenderPlantedC4(C_PlantedC4* pBomb, const BBox_t& bBox) noexcept {
       const bool canDefuse =
           pBomb->m_flC4Blow() >= pBomb->m_flDefuseCountDown();
 
-      auto pDefuser = pBomb->m_hBombDefuser().Get<CCSPlayerController>();
-
-      if (pDefuser->GetRefEHandle().GetEntryIndex() ==
-          Game::State::LocalController->GetRefEHandle().GetEntryIndex()) {
-        RenderCenteredTextWithOutline(window_pos, win_x, win_y,
-                                      canDefuse ? "You can defuse" : "Run!");
-      } else {
-        std::ostringstream ss;
-        ss << pDefuser->m_sSanitizedPlayerName() << " defuses the bomb and"
-           << (canDefuse ? "can" : "can't") << " defuse";
-
-        RenderCenteredTextWithOutline(window_pos, win_x, win_y,
-                                      ss.str().c_str());
-      }
+      pDraw->RenderCenteredTextWithOutline(
+          window_pos, win_x, win_y, canDefuse ? "Bomb can defused" : "Run!");
     } else {
       std::ostringstream ss;
       ss << std::fixed << std::setprecision(1) << "Bomb explodes in "
          << blowTime << " s";
 
-      ImU32 color = BombFadeColor(blowTime, pBomb->m_flTimerLength());
-      RenderCenteredTextWithOutline(window_pos, win_x, win_y, ss.str().c_str(),
-                                    color, 0x000000FF);
+      ImU32 color = pDraw->BombColorFade(blowTime, pBomb->m_flTimerLength());
+
+      pDraw->RenderCenteredTextWithOutline(window_pos, win_x, win_y,
+                                           ss.str().c_str(), color, 0x000000FF);
     }
 
     ImGui::End();
   }
-}
-
-unsigned int ESP::BombFadeColor(float x, float y) noexcept {
-  if (y <= 0)
-    return IM_COL32(255, 0, 0, 255);  // If max is 0 or less, return full red.
-
-  double z = static_cast<double>(x) / y;
-
-  int r, g;
-
-  if (z <= 0.05) {
-    // Very dark red
-    r = 255;
-    g = 0;
-  } else if (z <= 0.10) {
-    // Transition between very dark red and very intense red
-    double factor = (z - 0.05) * 20;
-    r = 255;
-    g = static_cast<int>(20 * (1 - factor));
-  } else if (z <= 0.5) {
-    // Transition between very intense red and regular green-to-red fade
-    double factor = (z - 0.10) / 0.40;
-    r = static_cast<int>(220 + (255 - 220) * factor);
-    g = static_cast<int>(20 * (1 - factor));
-  } else {
-    // Regular green-to-red fade
-    r = static_cast<int>(255.0 * (1 - z));
-    g = static_cast<int>(255.0 * z);
-  }
-
-  return IM_COL32(r, g, 0, 255);
 }

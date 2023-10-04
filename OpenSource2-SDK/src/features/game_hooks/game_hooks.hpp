@@ -16,32 +16,38 @@ typedef CHook<void __fastcall(CCSGOInput*, const std::int32_t, const bool)>
     CreateMove_t;
 typedef CHook<void __fastcall(void*, const std::int32_t)> FrameStageNotify_t;
 typedef CHook<__int64 __fastcall(void*)> LevelInit_t;
+typedef CHook<void __fastcall(void*, float)> SetInGameFOV_t;
+typedef CHook<__int64 __fastcall(void*, int)> GetInGameFOVPtr_t;
 
 namespace CHooks {
-static MouseInputEnabled_t MouseInputEnabled;
-static GetMatricesForView_t GetMatricesForView;
-static OnAddEntity_t OnAddEntity;
-static OnRemoveEntity_t OnRemoveEntity;
-static CreateMove_t CreateMove;
-static FrameStageNotify_t FrameStageNotify;
-static LevelInit_t LevelInit;
+  static MouseInputEnabled_t MouseInputEnabled;
+  static GetMatricesForView_t GetMatricesForView;
+  static OnAddEntity_t OnAddEntity;
+  static OnRemoveEntity_t OnRemoveEntity;
+  static CreateMove_t CreateMove;
+  static FrameStageNotify_t FrameStageNotify;
+  static LevelInit_t LevelInit;
+  static SetInGameFOV_t SetInGameFOV;
+  static GetInGameFOVPtr_t GetInGameFOVPtr;
 };  // namespace CHooks
 
 namespace Hooks {
-static bool __fastcall MouseInputEnabled(void* rcx);
-static void __fastcall GetMatricesForView(void* rcx, void* view,
-                                          VMatrix* pWorldToView,
-                                          VMatrix* pViewToProjection,
-                                          VMatrix* pWorldToProjection,
-                                          VMatrix* pWorldToPixels);
-static void* __fastcall OnAddEntity(void* rcx, CEntityInstance* pInstance,
-                                    CHandle hHandle);
-static void* __fastcall OnRemoveEntity(void* rcx, CEntityInstance* pInstance,
-                                       CHandle hHandle);
-static void __fastcall CreateMove(CCSGOInput* input, const std::int32_t slot,
-                                  const bool active);
-static void __fastcall FrameStageNotify(void* rcx, const std::int32_t stage);
-static __int64 __fastcall LevelInit(void* rcx);
+  static bool __fastcall MouseInputEnabled(void* rcx);
+  static void __fastcall GetMatricesForView(void* rcx, void* view,
+                                            VMatrix* pWorldToView,
+                                            VMatrix* pViewToProjection,
+                                            VMatrix* pWorldToProjection,
+                                            VMatrix* pWorldToPixels);
+  static void* __fastcall OnAddEntity(void* rcx, CEntityInstance* pInstance,
+                                      CHandle hHandle);
+  static void* __fastcall OnRemoveEntity(void* rcx, CEntityInstance* pInstance,
+                                         CHandle hHandle);
+  static void __fastcall CreateMove(CCSGOInput* input, const std::int32_t slot,
+                                    const bool active);
+  static void __fastcall FrameStageNotify(void* rcx, const std::int32_t stage);
+  static __int64 __fastcall LevelInit(void* rcx);
+  static void __fastcall SetInGameFOV(void* rcx, float fov);
+  static __int64 __fastcall GetInGameFOVPtr(void* rcx, int a2);
 };  // namespace Hooks
 
 const enum EHookIndexes {
@@ -52,8 +58,8 @@ const enum EHookIndexes {
 };
 
 namespace os2 {
-namespace game {
-void initialise();
-void unhook();
-};  // namespace game
+  namespace game {
+  void initialise();
+  void unhook();
+  };  // namespace game
 };  // namespace os2

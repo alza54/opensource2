@@ -4,7 +4,7 @@
 
 class BunnyHop : public Feature {
  public:
-  BunnyHop() : Feature("BunnyHop"), bWasLastTimeOnGround(false) {}
+  CONSTRUCT_FEATURE(BunnyHop), bWasLastTimeOnGround(false) {}
 
   CONFIG_GETTER(bool, Enabled)
   CONFIG_GETTER(bool, DrawGUI)

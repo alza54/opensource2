@@ -7,6 +7,8 @@ namespace os2::sdk {
    public:
     SCHEMA_FIELD(m_aimPunchCache, "C_CSPlayerPawn", "m_aimPunchCache",
                  CUtlVector<glm::vec3>);
+    SCHEMA_FIELD(m_szLastPlaceName, "C_CSPlayerPawn", "m_szLastPlaceName",
+                 char[18]);
 
     bool IsEnemyWithTeam(int team);
 

@@ -6,7 +6,7 @@ using namespace os2;
 
 class ESP : public Feature {
  public:
-  ESP() : Feature("ESP") {}
+  CONSTRUCT_FEATURE(ESP) {}
 
   CONFIG_GETTER(bool, Enabled)
   CONFIG_GETTER(bool, DrawGUI)
@@ -31,9 +31,6 @@ class ESP : public Feature {
 
   CONFIG_GETTER(bool, DrawChickenBox)
 
-  CONFIG_GETTER(bool, DrawAimFOV)
-  CONFIG_GETTER(float, AimFOV)
-
   void RenderUI() noexcept;
   void OnRender() noexcept override;
 
@@ -41,20 +38,6 @@ class ESP : public Feature {
                     glm::vec3&) noexcept override {}
 
   void CalculateBoundingBoxes() noexcept;
-
-  unsigned int BombFadeColor(float x, float y) noexcept;
-
-  void RenderShadow(ImVec2 position, float width, float height,
-                    float rounding = 0.0f, int shadowOffset = 2,
-                    int shadowLayers = 3,
-                    unsigned int color = 0x20000000) noexcept;
-  void RenderProgressBar(ImVec2 position, float width, unsigned int color,
-                         float progress, bool shadow = true) noexcept;
-  void RenderCenteredTextWithOutline(ImVec2 position, float width, float height,
-                                     std::string text,
-                                     unsigned int textColor = 0xFF000000,
-                                     unsigned int textBorderColor = 0xFFFFFFFF,
-                                     float offset = 1.0f) noexcept;
 
   nlohmann::json ToJson() const override {
     return {
@@ -72,14 +55,12 @@ class ESP : public Feature {
           {("bomb_timer"), config_.DrawBombTimer},
           {("bomb_timer_text"), config_.DrawBombTimerText},
           {("bomb_timer_overlay"), config_.DrawBombTimerOverlay},
-          {("chicken_box"), config_.DrawChickenBox},
-          {("aim_fov"), config_.DrawAimFOV}}},
+          {("chicken_box"), config_.DrawChickenBox}}},
         {("ignore"),
          {{("teammates"), config_.IgnoreTeammates},
           {("enemies"), config_.IgnoreEnemies},
           {("self"), config_.IgnoreSelf}}},
-        {("max_weapon_distance"), config_.MaxWeaponDistance},
-        {("aim_fov_value"), config_.AimFOV}};
+        {("max_weapon_distance"), config_.MaxWeaponDistance}};
   }
 
   void FromJson(const nlohmann::json& j) override {
@@ -102,7 +83,6 @@ class ESP : public Feature {
     config_.DrawBombTimerText = draw.at(("bomb_timer_text")).get<bool>();
     config_.DrawBombTimerOverlay = draw.at(("bomb_timer_overlay")).get<bool>();
     config_.DrawChickenBox = draw.at(("chicken_box")).get<bool>();
-    config_.DrawAimFOV = draw.at(("aim_fov")).get<bool>();
 
     const auto& ignore = j.at("ignore");
     config_.IgnoreTeammates = ignore.at(("teammates")).get<bool>();
@@ -110,7 +90,6 @@ class ESP : public Feature {
     config_.IgnoreSelf = ignore.at(("self")).get<bool>();
 
     config_.MaxWeaponDistance = j.at(("max_weapon_distance")).get<float>();
-    config_.AimFOV = j.at(("aim_fov_value")).get<float>();
   }
 
  private:
@@ -145,7 +124,5 @@ class ESP : public Feature {
     bool DrawBombTimerOverlay = false;
     bool DrawChickenBox = false;
     float MaxWeaponDistance = 0.0f;
-    bool DrawAimFOV = false;
-    float AimFOV = 0.0f;
   } config_;
 };

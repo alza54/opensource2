@@ -5,13 +5,12 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <variant>
 
 #include "../feature.hpp"
 
 class TriggerBot : public Feature {
  public:
-  TriggerBot() : Feature("TriggerBot") {}
+  CONSTRUCT_FEATURE(TriggerBot) {}
 
   CONFIG_GETTER(bool, Enabled)
   CONFIG_GETTER(bool, DrawGUI)
@@ -26,9 +25,6 @@ class TriggerBot : public Feature {
   void OnCreateMove(os2::sdk::CCSGOInput* pCsgoInput,
                     os2::sdk::CUserCmd* pUserCmd,
                     glm::vec3& view_angles) noexcept override;
-
-  void DrawInfo(const std::string& input, __int64 index,
-                unsigned int text_color) noexcept;
 
   nlohmann::json ToJson() const override {
     return {{("enabled"), config_.Enabled},
@@ -57,9 +53,4 @@ class TriggerBot : public Feature {
     float MaxSmokeDensity = 0.3f;
     bool ScopedOnly = true;
   } config_;
-
-  bool lock_vector = false;
-
-  std::vector<std::pair<std::string, unsigned int>>
-      displayed_info;
 };

@@ -197,9 +197,12 @@
     <ClCompile Include="dependencies\implot\implot_items.cpp" />
     <ClCompile Include="src\entrypoint\dllmain.cpp" />
     <ClCompile Include="src\entrypoint\OpenSource2SDK.cpp" />
+    <ClCompile Include="src\features\aim_enhancement\aimbot.cpp" />
     <ClCompile Include="src\features\aim_enhancement\recoil_control.cpp" />
+    <ClCompile Include="src\features\drawing\drawing.cpp" />
     <ClCompile Include="src\features\esp\esp.cpp" />
     <ClCompile Include="src\features\features.cpp" />
+    <ClCompile Include="src\features\fov_changer\fov_changer.cpp" />
     <ClCompile Include="src\features\game_hooks\game_hooks.cpp" />
     <ClCompile Include="src\features\helpers\draw_utilities.cpp" />
     <ClCompile Include="src\features\helpers\post_processing.cpp" />
@@ -209,7 +212,6 @@
     <ClCompile Include="src\game\renderer.cpp" />
     <ClCompile Include="src\menu\components\TopBar.cpp" />
     <ClCompile Include="src\menu\menu.cpp" />
-    <ClCompile Include="src\sdk\config\config.cpp" />
     <ClCompile Include="src\sdk\hooks\directx11\directx11_hook.cpp" />
     <ClCompile Include="src\sdk\hooks\hooks.cpp" />
     <ClCompile Include="src\sdk\hooks\wndproc\wndproc_hook.cpp" />
@@ -598,10 +600,13 @@
     <ClInclude Include="resources\fonts\libertad_font.hpp" />
     <ClInclude Include="resources\fonts\red_hat_display.hpp" />
     <ClInclude Include="src\entrypoint\OpenSource2SDK.hpp" />
+    <ClInclude Include="src\features\aim_enhancement\aimbot.hpp" />
     <ClInclude Include="src\features\aim_enhancement\recoil_control.hpp" />
+    <ClInclude Include="src\features\drawing\drawing.hpp" />
     <ClInclude Include="src\features\esp\esp.hpp" />
     <ClInclude Include="src\features\feature.hpp" />
     <ClInclude Include="src\features\features.hpp" />
+    <ClInclude Include="src\features\fov_changer\fov_changer.hpp" />
     <ClInclude Include="src\features\game_hooks\game_hooks.hpp" />
     <ClInclude Include="src\features\helpers\draw_utilities.hpp" />
     <ClInclude Include="src\features\helpers\post_processing.hpp" />
@@ -612,7 +617,6 @@
     <ClInclude Include="src\menu\menu.hpp" />
     <ClInclude Include="src\menu\state.hpp" />
     <ClInclude Include="src\sdk\api.hpp" />
-    <ClInclude Include="src\sdk\config\config.hpp" />
     <ClInclude Include="src\sdk\fnv1a\hash_fnv1a_constexpr.hpp" />
     <ClInclude Include="src\sdk\framework.hpp" />
     <ClInclude Include="src\sdk\hooks\directx11\directx11_hook.hpp" />
@@ -653,7 +657,7 @@
     <ClInclude Include="src\sdk\source-sdk\classes\entity\cbaseplayercontroller.hpp" />
     <ClInclude Include="src\sdk\source-sdk\classes\entity\ccollisionproperty.hpp" />
     <ClInclude Include="src\sdk\source-sdk\classes\entity\ccsplayercontroller.hpp" />
-    <ClInclude Include="src\sdk\source-sdk\classes\entity\ccsplayer_cameraservices.hpp" />
+    <ClInclude Include="src\sdk\source-sdk\classes\entity\cplayer_cameraservices.hpp" />
     <ClInclude Include="src\sdk\source-sdk\classes\entity\ccsplayer_viewmodelservices.hpp" />
     <ClInclude Include="src\sdk\source-sdk\classes\entity\centityidentity.hpp" />
     <ClInclude Include="src\sdk\source-sdk\classes\entity\centityinstance.hpp" />
@@ -669,6 +673,7 @@
     <ClInclude Include="src\sdk\source-sdk\classes\entity\c_csplayerpawnbase.hpp" />
     <ClInclude Include="src\sdk\source-sdk\classes\entity\c_plantedc4.hpp" />
     <ClInclude Include="src\sdk\source-sdk\classes\entity\c_csweaponbase.hpp" />
+    <ClInclude Include="src\sdk\source-sdk\classes\entity\c_pointcamera.hpp" />
     <ClInclude Include="src\sdk\source-sdk\classes\gcsdk\cgcclient.hpp" />
     <ClInclude Include="src\sdk\source-sdk\classes\gcsdk\cgcclientsystem.hpp" />
     <ClInclude Include="src\sdk\source-sdk\classes\types\cglobalvarsbase.hpp" />

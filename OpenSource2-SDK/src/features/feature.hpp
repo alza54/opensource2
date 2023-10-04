@@ -9,12 +9,21 @@
 #include "../sdk/interfaces/interfaces.hpp"
 #include "../sdk/memory/memory.hpp"
 
+class Features;
+
+#define CONSTRUCT_FEATURE(FEATURE_NAME) \
+  FEATURE_NAME(Features* pFeatures_) : Feature(#FEATURE_NAME, pFeatures_)
+
 class Feature {
  private:
   const char* name_;
 
+ protected:
+  const Features* pFeatures;
+
  public:
-  Feature(const char* className) : name_(className) {}
+  Feature(const char* className, Features* pFeatures_)
+      : pFeatures(pFeatures_), name_(className) {}
 
   const char* Name() const { return name_; }
 
@@ -26,6 +35,9 @@ class Feature {
   virtual void OnFrameStageNotify(os2::sdk::CSource2Client*,
                                   const std::int32_t) noexcept {}
   virtual void OnRender() noexcept = 0;
+  virtual void OnLevelInit() noexcept {}
+  virtual void OnRemoveEntity(os2::sdk::CEntityInstance* pInstance,
+                              os2::sdk::CHandle hHandle) noexcept {}
 
   virtual nlohmann::json ToJson() const = 0;
   virtual void FromJson(const nlohmann::json& j) = 0;

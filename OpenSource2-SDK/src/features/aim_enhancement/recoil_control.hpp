@@ -4,7 +4,7 @@
 
 class RecoilControl : public Feature {
  public:
-  RecoilControl() : Feature("Recoil Control") {}
+  CONSTRUCT_FEATURE(RecoilControl) {}
 
   CONFIG_GETTER(bool, Enabled)
   CONFIG_GETTER(bool, DrawGUI)

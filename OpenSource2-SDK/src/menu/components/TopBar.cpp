@@ -6,7 +6,6 @@
 
 #include "../menu.hpp"
 #include "../../features/features.hpp"
-#include "../../sdk/config/config.hpp"
 
 using namespace os2::menu;
 
@@ -71,7 +70,7 @@ void TopBar::Render() noexcept {
 
   if (ImGui::BeginMenu("Aim")) {
     TopBar::MenuItemEx("Aim Assistance", ICON_MDI_ROBOT,
-                       gameFeatures->recoilControl->DrawGUI(),
+                       gameFeatures->aimBot->DrawGUI(),
                        "Aimbot");
     TopBar::MenuItemEx("Auto Shoot", ICON_MDI_PISTOL,
                        gameFeatures->triggerBot->DrawGUI(),
@@ -101,6 +100,8 @@ void TopBar::Render() noexcept {
     TopBar::MenuItemEx("Bomb ESP", ICON_MDI_BOMB, gameFeatures->esp->DrawGUI());
     TopBar::MenuItemEx("Chicken ESP", ICON_MDI_TURKEY,
                        gameFeatures->esp->DrawGUI());
+    TopBar::MenuItemEx("FOV Changer", ICON_MDI_EYE,
+                       gameFeatures->fov_changer->DrawGUI());
     ImGui::MenuItem("Custom Chams", ICON_MDI_PALETTE_ADVANCED);
     ImGui::MenuItem("Player Radar", ICON_MDI_RADAR);
     ImGui::MenuItem("World 3D Helpers", ICON_MDI_PRINTER_3D);

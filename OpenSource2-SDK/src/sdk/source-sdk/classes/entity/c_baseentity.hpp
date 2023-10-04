@@ -18,6 +18,7 @@ namespace os2::sdk {
     bool IsChicken();
     bool IsViewModel();
     bool IsPlantedC4();
+    bool IsPointCamera();
 
     glm::vec3 GetOrigin();
     bool GetBoundingBox(os2::sdk::BBox_t& out,

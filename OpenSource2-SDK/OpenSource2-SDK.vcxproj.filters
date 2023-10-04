@@ -210,6 +210,18 @@
     <Filter Include="Project Files\features\triggerbot">
       <UniqueIdentifier>{ea6d5f60-dc4d-455f-83ac-170d80f15c4d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Project Files\features\aim enhancement\aimbot">
+      <UniqueIdentifier>{161585d3-4c19-401c-9d94-a5c7e8fd06ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Project Files\features\drawing">
+      <UniqueIdentifier>{99e946ea-dae3-4073-9673-c3463d5b2ede}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Project Files\features\visuals">
+      <UniqueIdentifier>{664fe445-23d3-4178-8f1b-a05be4688b48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Project Files\features\visuals\fov_changer">
+      <UniqueIdentifier>{a9afec16-42bb-4829-b771-783f33c762f1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\entrypoint\dllmain.cpp">
@@ -374,9 +386,6 @@
     <ClCompile Include="src\game\renderer.cpp">
       <Filter>Project Files\essentials\game</Filter>
     </ClCompile>
-    <ClCompile Include="src\sdk\config\config.cpp">
-      <Filter>Project Files\sdk\config</Filter>
-    </ClCompile>
     <ClCompile Include="src\features\helpers\draw_utilities.cpp">
       <Filter>Project Files\features\helpers</Filter>
     </ClCompile>
@@ -391,6 +400,15 @@
     </ClCompile>
     <ClCompile Include="src\features\features.cpp">
       <Filter>Project Files\features</Filter>
+    </ClCompile>
+    <ClCompile Include="src\features\aim_enhancement\aimbot.cpp">
+      <Filter>Project Files\features\aim enhancement\aimbot</Filter>
+    </ClCompile>
+    <ClCompile Include="src\features\drawing\drawing.cpp">
+      <Filter>Project Files\features\drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\features\fov_changer\fov_changer.cpp">
+      <Filter>Project Files\features\visuals\fov_changer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1487,7 +1505,7 @@
     <ClInclude Include="src\sdk\source-sdk\classes\entity\ccollisionproperty.hpp">
       <Filter>Project Files\sdk\source-sdk\classes\entity</Filter>
     </ClInclude>
-    <ClInclude Include="src\sdk\source-sdk\classes\entity\ccsplayer_cameraservices.hpp">
+    <ClInclude Include="src\sdk\source-sdk\classes\entity\cplayer_cameraservices.hpp">
       <Filter>Project Files\sdk\source-sdk\classes\entity</Filter>
     </ClInclude>
     <ClInclude Include="src\sdk\source-sdk\classes\entity\ccsplayer_viewmodelservices.hpp">
@@ -1727,9 +1745,6 @@
     <ClInclude Include="dependencies\nlohmann\include\nlohmann\detail\output\serializer.hpp">
       <Filter>Dependencies\json\detail\output</Filter>
     </ClInclude>
-    <ClInclude Include="src\sdk\config\config.hpp">
-      <Filter>Project Files\sdk\config</Filter>
-    </ClInclude>
     <ClInclude Include="src\features\helpers\post_processing.hpp">
       <Filter>Project Files\features\helpers\post_processing</Filter>
     </ClInclude>
@@ -1744,6 +1759,18 @@
     </ClInclude>
     <ClInclude Include="resources\fonts\red_hat_display.hpp">
       <Filter>Resource Files\Fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\features\aim_enhancement\aimbot.hpp">
+      <Filter>Project Files\features\aim enhancement\aimbot</Filter>
+    </ClInclude>
+    <ClInclude Include="src\features\drawing\drawing.hpp">
+      <Filter>Project Files\features\drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sdk\source-sdk\classes\entity\c_pointcamera.hpp">
+      <Filter>Project Files\sdk\source-sdk\classes\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\features\fov_changer\fov_changer.hpp">
+      <Filter>Project Files\features\visuals\fov_changer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

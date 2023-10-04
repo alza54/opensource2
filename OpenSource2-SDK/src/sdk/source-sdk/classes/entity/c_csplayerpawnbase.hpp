@@ -27,8 +27,6 @@ namespace os2::sdk {
                  "m_entitySpottedState", EntitySpottedState_t);
     SCHEMA_FIELD(m_bHasMovedSinceSpawn, "C_CSPlayerPawnBase",
                  "m_bHasMovedSinceSpawn", bool);
-    SCHEMA_FIELD(m_szLastPlaceName, "C_CSPlayerPawnBase", "m_szLastPlaceName",
-                 char[18]);
     SCHEMA_FIELD(m_bIsScoped, "C_CSPlayerPawnBase", "m_bIsScoped", bool);
   };
 };  // namespace os2::sdk

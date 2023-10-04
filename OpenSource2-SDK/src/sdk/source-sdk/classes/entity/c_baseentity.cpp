@@ -38,6 +38,18 @@ bool C_BaseEntity::IsPlantedC4() {
   return hash_32_fnv1a_const(className) == C_PlantedC4;
 }
 
+// Useless
+bool C_BaseEntity::IsPointCamera() {
+  SchemaClassInfoData_t* pClassInfo = Schema_DynamicBinding();
+  if (!pClassInfo) return false;
+
+  const char* className = pClassInfo->GetName();
+  if (!className) return false;
+
+  static constexpr auto C_PointCamera = hash_32_fnv1a_const("C_PointCamera");
+  return hash_32_fnv1a_const(className) == C_PointCamera;
+}
+
 bool C_BaseEntity::IsViewModel() { return CALL_VIRTUAL(bool, 242, this); }
 
 glm::vec3 C_BaseEntity::GetOrigin() {

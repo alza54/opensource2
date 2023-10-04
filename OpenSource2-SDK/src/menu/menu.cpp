@@ -9,6 +9,8 @@
 #include "../sdk/interfaces/interfaces.hpp"
 #include "../features/helpers/post_processing.hpp"
 
+#include "../game/state.hpp"
+
 inline bool g_showTable = false;
 
 #define MENU_WINDOW_WIDTH (const unsigned int)512
@@ -58,7 +60,7 @@ void os2::menu::Render() {
 
   ImGui::PushFont(fonts::libertad_mono);
 
-  ImGui::Begin("Analytics", &bIsOpen, ImGuiWindowFlags_AlwaysAutoResize);
+  ImGui::Begin("Analytics", &bIsOpen, ImGuiConfigFlags_None);
 
   // PostProcessing::performFullscreenBlur(ImGui::GetWindowDrawList(), 1.f);
 
@@ -83,9 +85,9 @@ void os2::menu::Render() {
 
     const std::array<std::pair<const char*, const char*>, 4> data = {
       std::make_pair("Is Connected",
-                      os2::iface::pEngine->IsConnected() ? "Yes" : "No"),
+                     os2::iface::pEngine->IsConnected() ? "Yes" : "No"),
       std::make_pair("Is In Game",
-                      os2::iface::pEngine->IsInGame() ? "Yes" : "No"),
+                     os2::iface::pEngine->IsInGame() ? "Yes" : "No"),
       std::make_pair("Screen Width", width),
       std::make_pair("Screen Height", height)
     };

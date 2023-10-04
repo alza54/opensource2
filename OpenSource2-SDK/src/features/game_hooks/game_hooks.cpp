@@ -119,7 +119,49 @@ static __int64 __fastcall Hooks::LevelInit(void* rcx) {
 
   ResolveFromAddress(os2::fn::GlobalVarsAddress, State::GlobalVars, true);
 
+  gameFeatures->OnLevelInit();
+
   return CHooks::LevelInit(rcx);
+}
+
+inline void* in_game_ptr_rcx = nullptr;
+
+static __int64 __fastcall Hooks::GetInGameFOVPtr(void* rcx, int a2 /* == -1 */) {
+  SHUTTING_DOWN_MACRO(CHooks::GetInGameFOVPtr(rcx, a2));
+
+  in_game_ptr_rcx = rcx;
+
+  return CHooks::GetInGameFOVPtr(rcx, a2);
+}
+
+static void __fastcall Hooks::SetInGameFOV(void* rcx, float a2) {
+  SHUTTING_DOWN_MACRO(CHooks::SetInGameFOV(rcx, a2));
+
+  if (in_game_ptr_rcx == nullptr) {
+    CHooks::SetInGameFOV(rcx, a2);
+    return;
+  }
+
+  __int64 sceneCamera = os2::fn::GetSceneCamera();
+
+  float fFov = 90.f;
+
+  if (sceneCamera) {
+    if (gameFeatures->fov_changer->ChangeSceneFOV()) {
+      fFov = gameFeatures->fov_changer->SceneCameraFOV();
+    } else {
+      fFov = os2::fn::GetSceneCameraFov(reinterpret_cast<void*>(sceneCamera));
+    }
+  } else {
+    if (gameFeatures->fov_changer->InGameFOV() != 90.f) {
+      fFov = gameFeatures->fov_changer->InGameFOV();
+    } else {
+      CHooks::SetInGameFOV(rcx, a2);
+      return;
+    }
+  }
+
+  *reinterpret_cast<float*>(in_game_ptr_rcx) = fFov;
 }
 
 void os2::game::initialise() {
@@ -142,6 +184,12 @@ void os2::game::initialise() {
   CHooks::FrameStageNotify.HookVirtual(os2::iface::pClient, FRAME_STAGE_NOTIFY,
                                        HOOK_FUNCTION(Hooks::FrameStageNotify));
   CHooks::LevelInit.Hook(os2::fn::LevelInit, HOOK_FUNCTION(Hooks::LevelInit));
+
+  CHooks::SetInGameFOV.Hook(os2::fn::SetInGameFov,
+                            HOOK_FUNCTION(Hooks::SetInGameFOV));
+
+  CHooks::GetInGameFOVPtr.Hook(os2::fn::GetInGameFovPtr,
+                               HOOK_FUNCTION(Hooks::GetInGameFOVPtr));
 
   Data::g_pGameData->CacheCurrentEntities();
 }

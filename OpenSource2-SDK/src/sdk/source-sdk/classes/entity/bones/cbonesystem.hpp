@@ -46,6 +46,8 @@ namespace os2::sdk {
 
     std::int32_t GetBoneParent(std::int32_t index);
 
+    const char* GetBoneName(std::int32_t index);
+
    public:
     std::uint8_t padding_0[0x170];
     std::int32_t BoneCount;

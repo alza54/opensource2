@@ -1,31 +1,16 @@
 #include "triggerbot.hpp"
 
-#include <numbers>
-
 #include "../../game/state.hpp"
 #include "../../menu/menu.hpp"
 #include "../../sdk/source-sdk/classes/entity/c_csweaponbase.hpp"
 #include "../../sdk/source-sdk/classes/types/c_trace.hpp"
 
-// Extract RGBA components from a packed color
-#define IM_COL32_EXTRACT_RED(col) ((col >> 0) & 0xFF)
-#define IM_COL32_EXTRACT_GREEN(col) ((col >> 8) & 0xFF)
-#define IM_COL32_EXTRACT_BLUE(col) ((col >> 16) & 0xFF)
-#define IM_COL32_EXTRACT_ALPHA(col) ((col >> 24) & 0xFF)
+#include "../features.hpp"
 
 using namespace Game;
 using namespace os2::sdk;
 
 void TriggerBot::OnRender() noexcept {
-  this->lock_vector = true;
-
-  for (auto it = this->displayed_info.begin(); it != this->displayed_info.end(); it++) {
-    __int64 index = std::distance(this->displayed_info.begin(), it);
-    DrawInfo((*it).first, index, (*it).second);
-  }
-
-  this->lock_vector = false;
-
   TriggerBot::RenderUI();
 }
 
@@ -49,71 +34,8 @@ void TriggerBot::RenderUI() noexcept {
   ImGui::End();
 }
 
-template <typename T>
-constexpr auto deg2rad(T degrees) noexcept {
-  return degrees * (std::numbers::pi_v<T> / static_cast<T>(180));
-}
-
-static glm::vec3 fromAngle(const glm::vec3& angle) noexcept {
-  return glm::vec3{std::cos(deg2rad(angle.x)) * std::cos(deg2rad(angle.y)),
-                   std::cos(deg2rad(angle.x)) * std::sin(deg2rad(angle.y)),
-                   -std::sin(deg2rad(angle.x))};
-}
-
-void TriggerBot::DrawInfo(const std::string& input, __int64 index,
-                          unsigned int text_color) noexcept {
-  ImDrawList* draw_list = ImGui::GetBackgroundDrawList();
-
-  ImGui::PushFont(os2::menu::fonts::red_hat_display_large);
-
-  ImVec2 screen_size = ImGui::GetIO().DisplaySize;
-  ImVec2 screen_center = ImVec2(screen_size.x * 0.5f, screen_size.y * 0.5f);
-  ImVec2 text_size = ImGui::CalcTextSize(input.c_str());
-  ImVec2 text_pos = screen_center;
-
-  text_pos.x -= text_size.x * 0.5f;
-  text_pos.y += (screen_size.y * 0.05f) + 14.0f * index;
-
-  // Calculate the shadow color (material design style shadow is often
-  // semi-transparent black)
-  unsigned int shadow_color = IM_COL32(0, 0, 0, 128);
-
-  // Shadow offset (typically to the bottom right for a material design effect)
-  ImVec2 shadow_offset = ImVec2(2.0f, 2.0f);
-
-  // Draw shadow
-  draw_list->AddText(
-      ImVec2(text_pos.x + shadow_offset.x, text_pos.y + shadow_offset.y),
-      shadow_color, input.c_str());
-
-  unsigned int border_color = IM_COL32(
-      255 - IM_COL32_EXTRACT_RED(text_color),
-      255 - IM_COL32_EXTRACT_GREEN(text_color),
-      255 - IM_COL32_EXTRACT_BLUE(text_color),
-               IM_COL32_EXTRACT_ALPHA(text_color)  // preserve original alpha
-  );
-
-  float border_thickness = 1.0f;
-  // Draw contrasting border
-  for (float y = -border_thickness; y <= border_thickness; y++) {
-    for (float x = -border_thickness; x <= border_thickness; x++) {
-      if (x != 0.0f || y != 0.0f)  // Avoid drawing the main text position here
-        draw_list->AddText(ImVec2(text_pos.x + x, text_pos.y + y), border_color,
-                           input.c_str());
-    }
-  }
-
-  // Draw main text
-  draw_list->AddText(text_pos, text_color, input.c_str());
-
-  ImGui::PopFont();
-}
-
 void TriggerBot::OnCreateMove(CCSGOInput* pCsgoInput, CUserCmd* pUserCmd,
                               glm::vec3& view_angles) noexcept {
-  // If cleared while iterating, bad things happen
-  if (!this->lock_vector) this->displayed_info.clear();
-
   if (!Enabled()) return;
 
   if (!State::LocalController) return;
@@ -164,7 +86,7 @@ void TriggerBot::OnCreateMove(CCSGOInput* pCsgoInput, CUserCmd* pUserCmd,
   Vector start_pos = Vector{pPawn->GetEyePosition()};
   Vector end_pos =
       start_pos +
-      Vector{fromAngle(view_angles + correction_vector) * weapon_info->range()};
+      Vector{os2::math::FromAngle(view_angles + correction_vector) * weapon_info->range()};
 
   C_TraceFilter filter(0x1C3003, pPawn, nullptr, 4);
   C_Ray ray;
@@ -190,21 +112,22 @@ void TriggerBot::OnCreateMove(CCSGOInput* pCsgoInput, CUserCmd* pUserCmd,
                 pPawn->m_flFlashDuration()
           : 0.f;
 
+  const auto pDraw = pFeatures->drawing.get();
+
   if (fFlashDuration > MaxFlashIntensity()) {
-    std::string _flash = std::format("Flash: {}%", std::floor(fFlashDuration * 100));
-    this->displayed_info.emplace_back(std::make_pair(
-        _flash, ImGui::ColorConvertFloat4ToU32(ImVec4(255, 0, 0, 255))));
+    pDraw->RenderOnScreen(
+        std::format("Flash: {}%", std::floor(fFlashDuration * 100)));
     return;
   }
 
-  float fDensity = os2::fn::TraceSmoke(&start_pos, &end_pos, nullptr);
+  float fDensity = 0;
+  // os2::fn::TraceSmoke(&start_pos, &end_pos, nullptr);
 
   if (fDensity > MaxSmokeDensity()) {
-    std::string _density = std::format("Smoke: {}%", std::floor(fDensity * 100));
-    this->displayed_info.emplace_back(
-        std::make_pair(_density, ImGui::ColorConvertFloat4ToU32(ImVec4(255, 255, 0, 255))));
+    pDraw->RenderOnScreen(std::format("Smoke: {}%", std::floor(fDensity * 100)),
+                          ImVec4(255, 255, 0, 255));
     return;
   };
 
-  pUserCmd->m_buttons |= IN_ATTACK;
+   pUserCmd->m_buttons |= IN_ATTACK;
 }

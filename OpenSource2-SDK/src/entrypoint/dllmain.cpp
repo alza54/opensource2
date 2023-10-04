@@ -2,7 +2,7 @@
 #define LOAD_SDK_FILES
 #include "OpenSource2SDK.hpp"
 #include "../sdk/framework.hpp"
-#include "../sdk/config/config.hpp"
+#include "../features/features.hpp"
 
 #include <locale>
 #include <cstdio>

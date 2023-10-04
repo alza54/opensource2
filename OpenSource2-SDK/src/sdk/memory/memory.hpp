@@ -109,6 +109,8 @@ namespace os2 {
                                                   std::int32_t);
     inline std::int32_t(__fastcall* GetBoneParent)(os2::sdk::CModel*,
                                                    std::int32_t);
+    inline const char*(__fastcall* GetBoneName)(os2::sdk::CModel*,
+                                                std::int32_t);
 
     inline uintptr_t ViewMatrixAddress;
     inline uintptr_t GlobalVarsAddress;
@@ -141,6 +143,11 @@ namespace os2 {
         os2::sdk::C_EconItemView*);
 
     inline os2::sdk::CCSGOInput* pCSGOInput;
+
+    inline __int64(__fastcall* GetSceneCamera)();
+    inline void(__fastcall* SetInGameFov)(void*, float);
+    inline float(__fastcall* GetSceneCameraFov)(void*);
+    inline __int64(__fastcall* GetInGameFovPtr)(void*, int);
   }; // namespace fn
 };  // namespace os2
 

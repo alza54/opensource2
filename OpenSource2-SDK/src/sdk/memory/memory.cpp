@@ -91,6 +91,9 @@ void os2::memory::initialise() {
       ->FindPattern(BONE_PARENT)
       .Get(FUNCTION_VARIABLE(GetBoneParent));
 
+  os2::module::client->FindPattern(BONE_NAME).Get(
+      FUNCTION_VARIABLE(GetBoneName));
+
   os2::fn::ViewMatrixAddress =
       os2::module::client->FindPattern(VIEW_MATRIX).Abs().Address();
   LOG(strings::log_viewmatrix_address.c_str(), os2::fn::ViewMatrixAddress);
@@ -151,8 +154,21 @@ void os2::memory::initialise() {
       .Dereference(1)
       .Get(FUNCTION_VARIABLE(EngineTrace));
 
-  os2::fn::TraceSmoke = os2::module::client->GetOffset<float(__fastcall*)(
-      os2::sdk::Vector*, os2::sdk::Vector*, void*)>(0x4C5910);
+  os2::module::client->FindPattern(GET_SCENE_CAMERA)
+      .Get(FUNCTION_VARIABLE(GetSceneCamera));
+
+  os2::module::client->FindPattern(GET_SCENE_CAMERA_FOV)
+      .Get(FUNCTION_VARIABLE(GetSceneCameraFov));
+
+  os2::module::client->FindPattern(SET_IN_GAME_FOV)
+      .Get(FUNCTION_VARIABLE(SetInGameFov));
+
+  os2::module::client->FindPattern(GET_IN_GAME_FOV_PTR)
+      .ToAbsolute(1, 0)
+      .Get(FUNCTION_VARIABLE(GetInGameFovPtr));
+
+  os2::module::client->FindPattern(TRACE_SMOKE)
+      .Get(FUNCTION_VARIABLE(TraceSmoke));
 
   os2::sdk::CModule sdl3(os2::memory::strings::sdl3_dll);
 

@@ -6,6 +6,11 @@
 
 #include "../entity/c_csplayerpawn.hpp"
 
+#define COMBINE(x, y) x##y
+#define COMBINE2(x, y) COMBINE(x, y)
+
+#define PAD_CLASS_DEBUG(sz) int COMBINE2(pad_, __COUNTER__)[sz];
+
 namespace os2::sdk {
   struct C_Ray {
     Vector Start;
@@ -25,10 +30,12 @@ namespace os2::sdk {
   };
 
   struct C_TraceHitboxData {
-    PAD_CLASS(0x58);
+    PAD_CLASS_DEBUG(0x38 / 0x4);
     int Hitgroup;
-    PAD_CLASS(0x4);
+    PAD_CLASS_DEBUG(0x2);
+    PAD_CLASS(0x1);
     int HitboxId;
+    PAD_CLASS_DEBUG(0x24 / 0x4);
   };
 
   class C_GameTrace {
@@ -75,3 +82,5 @@ namespace os2::sdk {
                   C_CSPlayerPawn* Skip2, int Layer);
   };
 };  // namespace os2::sdk
+
+static_assert(sizeof(os2::sdk::C_TraceHitboxData) == 0x70);

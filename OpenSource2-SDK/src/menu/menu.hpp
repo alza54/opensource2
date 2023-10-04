@@ -3,8 +3,6 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
 
-#include "../sdk/config/config.hpp"
-
 #include "state.hpp"
 
 class ImStyleCache {

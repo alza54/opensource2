@@ -2,7 +2,7 @@
 
 #include "c_basemodelentity.hpp"
 #include "cplayer_weaponservices.hpp"
-#include "ccsplayer_cameraservices.hpp"
+#include "cplayer_cameraservices.hpp"
 
 namespace os2::sdk {
   class C_BasePlayerPawn : public C_BaseModelEntity {
@@ -11,6 +11,6 @@ namespace os2::sdk {
     SCHEMA_FIELD(m_pWeaponServices, "C_BasePlayerPawn", "m_pWeaponServices",
                  CPlayer_WeaponServices*);
     SCHEMA_FIELD(m_pCameraServices, "C_BasePlayerPawn", "m_pCameraServices",
-                 CCSPlayer_CameraServices*);
+                 CPlayer_CameraServices*);
   };
 };  // namespace os2::sdk

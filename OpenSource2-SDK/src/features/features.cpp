@@ -12,6 +12,7 @@ void Features::OnCreateMove(os2::sdk::CCSGOInput* pCsgoInput, os2::sdk::CUserCmd
   bunnyHop->OnCreateMove(pCsgoInput, cmd, view_angles);
   recoilControl->OnCreateMove(pCsgoInput, cmd, view_angles);
   triggerBot->OnCreateMove(pCsgoInput, cmd, view_angles);
+  aimBot->OnCreateMove(pCsgoInput, cmd, view_angles);
 }
 
 [[maybe_unused]] void Features::OnFrameStageNotify() noexcept {}
@@ -25,6 +26,22 @@ void Features::OnRender() noexcept {
   bunnyHop->OnRender();
   recoilControl->OnRender();
   triggerBot->OnRender();
+  aimBot->OnRender();
+  fov_changer->OnRender();
+  drawing->OnRender();
 
   ImGui::PopFont();
+}
+
+void Features::OnLevelInit() noexcept {
+  if (IS_UNLOADING) return;
+
+  aimBot->OnLevelInit();
+}
+
+void Features::OnRemoveEntity(os2::sdk::CEntityInstance* pInstance,
+                              os2::sdk::CHandle hHandle) noexcept {
+  if (IS_UNLOADING) return;
+
+  aimBot->OnRemoveEntity(pInstance, hHandle);
 }
