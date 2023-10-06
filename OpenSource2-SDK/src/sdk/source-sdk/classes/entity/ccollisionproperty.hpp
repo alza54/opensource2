@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../../../api.hpp"
+
 #include "../../../math/classes/vector.hpp"
 
 #include "../../../schema/schema.hpp"

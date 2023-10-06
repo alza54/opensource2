@@ -10,12 +10,15 @@ namespace os2::sdk {
     auto begin() const { return m_data; }
     auto end() const { return m_data + m_size; }
 
+    auto At(int i) const { return m_data[i]; }
+    auto AtPtr(int i) const { return m_data + i; }
+
     bool Exists(T val) const {
       for (const auto& it : *this)
         if (it == val) return true;
       return false;
     }
-    bool Empty() const { return m_size == 0; }
+    bool IsEmpty() const { return m_size == 0; }
 
     int m_size;
     char pad0[0x4];  // no idea

@@ -170,6 +170,14 @@ void os2::memory::initialise() {
   os2::module::client->FindPattern(TRACE_SMOKE)
       .Get(FUNCTION_VARIABLE(TraceSmoke));
 
+  os2::module::client->FindPattern(GET_HITBOX_SET)
+      .ToAbsolute(1, 0)
+      .Get(FUNCTION_VARIABLE(GetHitboxSet));
+
+  os2::module::client->FindPattern(HITBOX_TO_WORLD_TRANSFORMS)
+      .ToAbsolute(1, 0)
+      .Get(FUNCTION_VARIABLE(HitboxToWorldTransforms));
+
   os2::sdk::CModule sdl3(os2::memory::strings::sdl3_dll);
 
   // SDL Functions:

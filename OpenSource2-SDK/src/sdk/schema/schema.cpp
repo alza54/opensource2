@@ -7,13 +7,15 @@
 using SchemaKeyValueMap_t = std::unordered_map<uint32_t, int16_t>;
 using SchemaTableMap_t = std::unordered_map<uint32_t, SchemaKeyValueMap_t>;
 
-static bool InitSchemaFieldsForClass(SchemaTableMap_t& tableMap,
+static bool InitSchemaFieldsForClass(const char* moduleName,
+                                     SchemaTableMap_t& tableMap,
                                      const char* className, uint32_t classKey) {
   os2::sdk::CSchemaSystemTypeScope* pType =
-      os2::iface::pSchemaSystem->FindTypeScopeForModule(os2::memory::strings::client_dll.c_str());
+      os2::iface::pSchemaSystem->FindTypeScopeForModule(moduleName);
   if (!pType) return false;
 
-  os2::sdk::SchemaClassInfoData_t* pClassInfo = pType->FindDeclaredClass(className);
+  os2::sdk::SchemaClassInfoData_t* pClassInfo =
+      pType->FindDeclaredClass(className);
   if (!pClassInfo) {
     tableMap.emplace(classKey, SchemaKeyValueMap_t{});
 
@@ -43,21 +45,22 @@ static bool InitSchemaFieldsForClass(SchemaTableMap_t& tableMap,
   return true;
 }
 
-int16_t os2::schema::GetOffset(const char* className, uint32_t classKey,
-                          const char* memberName, uint32_t memberKey) {
+int16_t os2::schema::GetOffset(const char* moduleName, const char* className,
+                               uint32_t classKey, const char* memberName,
+                               uint32_t memberKey) {
   static SchemaTableMap_t schemaTableMap;
   const auto& tableMapIt = schemaTableMap.find(classKey);
   if (tableMapIt == schemaTableMap.cend()) {
-    if (InitSchemaFieldsForClass(schemaTableMap, className, classKey))
-      return GetOffset(className, classKey, memberName, memberKey);
+    if (InitSchemaFieldsForClass(moduleName, schemaTableMap, className,
+                                 classKey))
+      return GetOffset(moduleName, className, classKey, memberName, memberKey);
 
     return 0;
   }
 
   const SchemaKeyValueMap_t& tableMap = tableMapIt->second;
   if (tableMap.find(memberKey) == tableMap.cend()) {
-    LOG(strings::log_offset_not_found.c_str(), memberName,
-        className);
+    LOG(strings::log_offset_not_found.c_str(), memberName, className);
     return 0;
   }
 

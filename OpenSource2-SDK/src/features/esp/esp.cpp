@@ -1,11 +1,11 @@
 #include <iomanip>
 #include <sstream>
 
-#include "../../sdk/interfaces/interfaces.hpp"
-
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
+
+#include "../../sdk/interfaces/interfaces.hpp"
 
 #include "../../game/state.hpp"
 #include "../../gamedata/gamedata.hpp"
@@ -129,16 +129,16 @@ void ESP::CalculateBoundingBoxes() noexcept {
         C_CSPlayerPawn* pPlayerPawn =
             ((CCSPlayerController*)pEntity)->m_hPawn().Get<C_CSPlayerPawn>();
         if (pPlayerPawn)
-          it.shouldDrawEsp = pPlayerPawn->GetBoundingBox(it.boundingBox, false);
+          it.shouldDrawEsp = pPlayerPawn->CalculateBBoxByCollision(it.boundingBox);
       } break;
       case EEntityType::BASE_WEAPON:
-        it.shouldDrawEsp = pEntity->GetBoundingBox(it.boundingBox, true);
+        it.shouldDrawEsp = pEntity->CalculateBBoxByCollision(it.boundingBox);
         break;
       case EEntityType::CHICKEN:
-        it.shouldDrawEsp = pEntity->GetBoundingBox(it.boundingBox, false);
+        it.shouldDrawEsp = pEntity->CalculateBBoxByCollision(it.boundingBox);
         break;
       case EEntityType::PLANTED_C4:
-        it.shouldDrawEsp = pEntity->GetBoundingBox(it.boundingBox, true);
+        it.shouldDrawEsp = pEntity->CalculateBBoxByCollision(it.boundingBox);
     }
   }
 }
@@ -172,12 +172,12 @@ void ESP::RenderSkeleton(C_CSPlayerPawn* pPawn) noexcept {
     ImVec2 bone_screen_position;
     ImVec2 bone_screen_parent_position;
 
-    if (os2::math::WorldToScreenV1(
+    if (os2::math::WorldToScreen(
             os2::sdk::Vector(model_state.bones[i].position.x,
                              model_state.bones[i].position.y,
                              model_state.bones[i].position.z),
             bone_screen_position) &&
-        os2::math::WorldToScreenV1(
+        os2::math::WorldToScreen(
             os2::sdk::Vector(model_state.bones[bone_parent_index].position.x,
                              model_state.bones[bone_parent_index].position.y,
                              model_state.bones[bone_parent_index].position.z),
@@ -209,8 +209,8 @@ void ESP::RenderPlayerESP(CCSPlayerController* pPlayerController,
   else if (IgnoreSelf() && isLocalPlayer)
     return;
 
-  const ImVec2 min = {bBox.x, bBox.y};
-  const ImVec2 max = {bBox.w, bBox.h};
+  const ImVec2 min = bBox.m_Mins;
+  const ImVec2 max = bBox.m_Maxs;
 
   if (DrawPlayerBoxes()) {
     g_pGameData->DrawList()->AddRect(
@@ -282,8 +282,8 @@ void ESP::RenderWeaponESP(C_CSWeaponBase* pWeapon,
           (MaxWeaponDistance() * MaxWeaponDistance()))
     return;
 
-  const ImVec2 min = {bBox.x, bBox.y};
-  const ImVec2 max = {bBox.w, bBox.h};
+  const ImVec2 min = bBox.m_Mins;
+  const ImVec2 max = bBox.m_Maxs;
 
   if (DrawDroppedWeaponBoxes()) {
     g_pGameData->DrawList()->AddRect(
@@ -314,8 +314,8 @@ void ESP::RenderWeaponName(C_CSWeaponBase* pWeapon,
       os2::iface::pLocalize->FindSafe(pItemStaticData->m_pszItemBaseName);
   if (!szWeaponName || strlen(szWeaponName) < 1) return;
 
-  const ImVec2 min = {bBox.x, bBox.y};
-  const ImVec2 max = {bBox.w, bBox.h};
+  const ImVec2 min = bBox.m_Mins;
+  const ImVec2 max = bBox.m_Maxs;
 
   const ImVec2 textSize = ImGui::CalcTextSize(szWeaponName);
   const ImVec2 textPos =
@@ -330,8 +330,8 @@ void ESP::RenderWeaponName(C_CSWeaponBase* pWeapon,
 void ESP::RenderChickenESP(C_Chicken* pChicken, const BBox_t& bBox) noexcept {
   CHandle hLeader = pChicken->m_leader();
 
-  const ImVec2 min = {bBox.x, bBox.y};
-  const ImVec2 max = {bBox.w, bBox.h};
+  const ImVec2 min = bBox.m_Mins;
+  const ImVec2 max = bBox.m_Maxs;
 
   if (DrawChickenBox()) {
     g_pGameData->DrawList()->AddRect(
@@ -346,8 +346,8 @@ void ESP::RenderChickenESP(C_Chicken* pChicken, const BBox_t& bBox) noexcept {
 }
 
 void ESP::RenderPlantedC4(C_PlantedC4* pBomb, const BBox_t& bBox) noexcept {
-  const ImVec2 min = {bBox.x, bBox.y};
-  const ImVec2 max = {bBox.w, bBox.h};
+  const ImVec2 min = bBox.m_Mins;
+  const ImVec2 max = bBox.m_Maxs;
 
   if (!DrawPlantedBomb() || !pBomb->m_bBombTicking()) return;
 
@@ -363,7 +363,7 @@ void ESP::RenderPlantedC4(C_PlantedC4* pBomb, const BBox_t& bBox) noexcept {
   const float blowTime =
       pBomb->m_flC4Blow() - Game::State::GlobalVars->current_time;
 
-  const ImVec2 drawPosition = {(min.x + max.x - bBox.w) / 2.f, max.y + 20 + 6};
+  const ImVec2 drawPosition = {min.x, min.y + 20 + 6};
 
   if (DrawBombTimer()) {
     const auto color = pDraw->BombColorFade(blowTime, pBomb->m_flTimerLength());
@@ -378,7 +378,7 @@ void ESP::RenderPlantedC4(C_PlantedC4* pBomb, const BBox_t& bBox) noexcept {
 
     const auto szBlowTime = ss.str();
 
-    pDraw->RenderCenteredTextWithOutline(drawPosition, bBox.w, 20, szBlowTime);
+    pDraw->RenderCenteredTextWithOutline(drawPosition, max.x - min.x, 20, szBlowTime);
   }
 
   if (DrawBombTimerOverlay()) {

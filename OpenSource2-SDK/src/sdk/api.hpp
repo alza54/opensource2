@@ -30,6 +30,7 @@
 #define LOCALIZE_DLL os2_string("localize.dll")
 #define SCENESYSTEM_DLL os2_string("scenesystem.dll")
 #define MATERIALSYSTEM2_DLL os2_string("materialsystem2.dll")
+#define ANIMATIONSYSTEM_DLL os2_string("animationsystem.dll")
 
 // Interfaces
 #define GAME_RESOURCE_SERVICE_CLIENT os2_string("GameResourceServiceClientV001")
@@ -131,8 +132,17 @@
 #define GET_SCENE_CAMERA_FOV SIGNATURE("F3 0F 10 81 ? ? ? ? C3 CC CC CC CC CC CC CC 0F B6 41")
 
 // You can also do "45 0F 57 C9 44 0F 2F 08" + 0x16
-#define GET_IN_GAME_FOV_PTR SIGNATURE("E8 ? ? ? ? 48 85 C0 75 ? 48 8B 05 ? ? ? ? 48 8B 40 ? F3 0F 10 00 44 0F 28 4C 24")
+#define GET_IN_GAME_FOV_PTR                                                  \
+  SIGNATURE(                                                                 \
+      "E8 ? ? ? ? 48 85 C0 75 ? 48 8B 05 ? ? ? ? 48 8B 40 ? F3 0F 10 00 44 " \
+      "0F 28 4C 24")
 
-#define SET_IN_GAME_FOV SIGNATURE("40 53 48 81 EC ? ? ? ? 48 8B D9 E8 ? ? ? ? 48 85 C0")
+#define SET_IN_GAME_FOV \
+  SIGNATURE("40 53 48 81 EC ? ? ? ? 48 8B D9 E8 ? ? ? ? 48 85 C0")
 
 #define TRACE_SMOKE SIGNATURE("45 8B 00 48 83 C1")
+
+#define GET_HITBOX_SET \
+  SIGNATURE("E8 ? ? ? ? 48 85 C0 0F 85 ? ? ? ? 44 8D 48 07")
+
+#define HITBOX_TO_WORLD_TRANSFORMS SIGNATURE("E8 ? ? ? ? 45 33 F6 4C 63 E0")

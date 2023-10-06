@@ -33,10 +33,6 @@
 
 #include "../source-sdk/classes/ccsgoinput.hpp"
 
-// #include "../source-sdk/classes/c_trace.hpp"
-
-// #include "../source-sdk/interfaces/cgametracemanager.hpp"
-
 #include "../source-sdk/classes/types/cglobalvarsbase.hpp"
 
 #include "../source-sdk/interfaces/cgameeventmanager.hpp"
@@ -148,6 +144,12 @@ namespace os2 {
     inline void(__fastcall* SetInGameFov)(void*, float);
     inline float(__fastcall* GetSceneCameraFov)(void*);
     inline __int64(__fastcall* GetInGameFovPtr)(void*, int);
+
+    // Hitboxes
+    inline os2::sdk::CHitBoxSet*(__fastcall* GetHitboxSet)(void*, int);
+    inline int(__fastcall* HitboxToWorldTransforms)(void*,
+                                                    os2::sdk::CHitBoxSet*,
+                                                    CTransform*, int);
   }; // namespace fn
 };  // namespace os2
 

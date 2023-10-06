@@ -216,6 +216,7 @@
     <ClCompile Include="src\sdk\hooks\hooks.cpp" />
     <ClCompile Include="src\sdk\hooks\wndproc\wndproc_hook.cpp" />
     <ClCompile Include="src\sdk\interfaces\interfaces.cpp" />
+    <ClCompile Include="src\sdk\math\classes\transform.cpp" />
     <ClCompile Include="src\sdk\math\math.cpp" />
     <ClCompile Include="src\sdk\memory\memory.cpp" />
     <ClCompile Include="src\sdk\schema\schema.cpp" />
@@ -625,9 +626,12 @@
     <ClInclude Include="src\sdk\hooks\wndproc\wndproc_hook.hpp" />
     <ClInclude Include="src\sdk\interfaces\interfaces.hpp" />
     <ClInclude Include="src\sdk\interface\interface.hpp" />
+    <ClInclude Include="src\sdk\math\classes\transform.hpp" />
     <ClInclude Include="src\sdk\math\classes\vector.hpp" />
     <ClInclude Include="src\sdk\math\classes\vmatrix.hpp" />
     <ClInclude Include="src\sdk\math\math.hpp" />
+    <ClInclude Include="src\sdk\math\types\bbox_t.hpp" />
+    <ClInclude Include="src\sdk\math\types\quaternion.hpp" />
     <ClInclude Include="src\sdk\memory\memory.hpp" />
     <ClInclude Include="src\sdk\module\module.hpp" />
     <ClInclude Include="src\sdk\schema\schema.hpp" />
@@ -674,6 +678,7 @@
     <ClInclude Include="src\sdk\source-sdk\classes\entity\c_plantedc4.hpp" />
     <ClInclude Include="src\sdk\source-sdk\classes\entity\c_csweaponbase.hpp" />
     <ClInclude Include="src\sdk\source-sdk\classes\entity\c_pointcamera.hpp" />
+    <ClInclude Include="src\sdk\source-sdk\classes\entity\hitbox\hitbox.hpp" />
     <ClInclude Include="src\sdk\source-sdk\classes\gcsdk\cgcclient.hpp" />
     <ClInclude Include="src\sdk\source-sdk\classes\gcsdk\cgcclientsystem.hpp" />
     <ClInclude Include="src\sdk\source-sdk\classes\types\cglobalvarsbase.hpp" />
