@@ -27,6 +27,14 @@ The software has been tested on [build ID 12321656 released on 9/29/2023](https:
 
 ### Changelog
 
+#### v0.5.0
+
+* **Features / Visuals**: Added Chams.
+* **Features / ESP**: Optimized text rendering.
+* **Features / ESP**: Added 3D-box ESP for objects.
+* **SDK**: added collision-based bounding-box calculation.
+* **SDK**: added hitbox-based bounding-box calculation.
+
 #### v0.4.0 ("Everyday" Release)
 
 * **SDK**: Corrected indexes of ***CEngineClient*** after the game update.

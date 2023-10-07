@@ -50,7 +50,7 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>false</WholeProgramOptimization>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -681,7 +681,9 @@
     <ClInclude Include="src\sdk\source-sdk\classes\entity\hitbox\hitbox.hpp" />
     <ClInclude Include="src\sdk\source-sdk\classes\gcsdk\cgcclient.hpp" />
     <ClInclude Include="src\sdk\source-sdk\classes\gcsdk\cgcclientsystem.hpp" />
+    <ClInclude Include="src\sdk\source-sdk\classes\material_system\material_system.hpp" />
     <ClInclude Include="src\sdk\source-sdk\classes\types\cglobalvarsbase.hpp" />
+    <ClInclude Include="src\sdk\source-sdk\classes\types\c_sounddata.hpp" />
     <ClInclude Include="src\sdk\source-sdk\classes\types\c_trace.hpp" />
     <ClInclude Include="src\sdk\source-sdk\interfaces\ccvar.hpp" />
     <ClInclude Include="src\sdk\source-sdk\interfaces\cengineclient.hpp" />
@@ -692,6 +694,7 @@
     <ClInclude Include="src\sdk\source-sdk\interfaces\cmaterialsystem2.hpp" />
     <ClInclude Include="src\sdk\source-sdk\interfaces\cschemasystem.hpp" />
     <ClInclude Include="src\sdk\source-sdk\interfaces\csource2client.hpp" />
+    <ClInclude Include="src\sdk\source-sdk\interfaces\iscenelayer.hpp" />
     <ClInclude Include="src\sdk\source-sdk\source-sdk.hpp" />
     <ClInclude Include="src\sdk\utilities\static_string.hpp" />
     <ClInclude Include="src\sdk\virtual\virtual.hpp" />

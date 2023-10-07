@@ -11,6 +11,7 @@
 #include "../source-sdk/interfaces/ccvar.hpp"
 #include "../source-sdk/classes/cmaterial2.hpp"
 #include "../source-sdk/interfaces/cmaterialsystem2.hpp"
+#include "../source-sdk/interfaces/iscenelayer.hpp"
 
 namespace os2 {
   namespace module {
@@ -21,6 +22,7 @@ namespace os2 {
     inline std::shared_ptr<sdk::CModule> tier0;
     inline std::shared_ptr<sdk::CModule> localize;
     inline std::shared_ptr<sdk::CModule> materialsystem;
+    inline std::shared_ptr<sdk::CModule> scenesystem;
   };  // namespace module
 
   namespace iface {
