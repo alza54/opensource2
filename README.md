@@ -68,6 +68,10 @@ The software has been tested on [build ID 12321656 released on 9/29/2023](https:
 
 # Screenshots
 
+### v0.5.0
+![Cheat SDK GUI](https://github.com/alza54/opensource2/blob/main/media/gui-v0.5.0-1.png?raw=true)
+![Cheat SDK GUI](https://github.com/alza54/opensource2/blob/main/media/gui-v0.5.0-2.png?raw=true)
+
 ### v0.4.0
 ![Cheat SDK GUI](https://github.com/alza54/opensource2/blob/main/media/gui-v0.4.0.png?raw=true)
 
