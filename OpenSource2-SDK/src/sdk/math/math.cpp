@@ -1,82 +1,67 @@
 #include "math.hpp"
-#include <numbers>
-
-#include <glm/trigonometric.hpp>
 
 #include <algorithm>
+#include <glm/trigonometric.hpp>
+#include <numbers>
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
 
-#include "../memory/memory.hpp"
 #include "../interfaces/interfaces.hpp"
+#include "../memory/memory.hpp"
 
-static glm::mat4x4 g_viewMatrix;
+inline glm::mat4x4 m_ViewMatrix;
 
 // An alternative way to calculate the world to screen matrix.
-void os2::math::UpdateViewMatrix(os2::sdk::VMatrix* pViewMatrix) noexcept  {
+void os2::math::UpdateViewMatrix(os2::sdk::VMatrix* pViewMatrix) noexcept {
   if (!pViewMatrix) return;
-  g_viewMatrix = pViewMatrix->glm();
+  m_ViewMatrix = pViewMatrix->glm();
 }
 
-bool os2::math::WorldToScreenV1(const os2::sdk::Vector& in,
-                                ImVec2& out) noexcept {
+// s/o:
+// https://github.com/bruhmoment21/cs2-sdk/blob/dc9636aad20975a052d779b771e5708db80051be/cs2-sdk/src/math/math.cpp#L39
+bool os2::math::WorldToScreen(const os2::sdk::Vector& in,
+                              ImVec2& out) noexcept {
   if (!ImGui::GetCurrentContext()) return false;
 
-  const float z = g_viewMatrix[3][0] * in.x + g_viewMatrix[3][1] * in.y +
-                  g_viewMatrix[3][2] * in.z + g_viewMatrix[3][3];
+  const float z = m_ViewMatrix[3][0] * in.x + m_ViewMatrix[3][1] * in.y +
+                  m_ViewMatrix[3][2] * in.z + m_ViewMatrix[3][3];
   if (z < 0.001f) return false;
 
   out = ImGui::GetIO().DisplaySize * 0.5f;
-  out.x *= 1.0f + (g_viewMatrix[0][0] * in.x + g_viewMatrix[0][1] * in.y +
-                   g_viewMatrix[0][2] * in.z + g_viewMatrix[0][3]) /
+  out.x *= 1.0f + (m_ViewMatrix[0][0] * in.x + m_ViewMatrix[0][1] * in.y +
+                   m_ViewMatrix[0][2] * in.z + m_ViewMatrix[0][3]) /
                       z;
-  out.y *= 1.0f - (g_viewMatrix[1][0] * in.x + g_viewMatrix[1][1] * in.y +
-                   g_viewMatrix[1][2] * in.z + g_viewMatrix[1][3]) /
+  out.y *= 1.0f - (m_ViewMatrix[1][0] * in.x + m_ViewMatrix[1][1] * in.y +
+                   m_ViewMatrix[1][2] * in.z + m_ViewMatrix[1][3]) /
                       z;
 
-  // So 'rounded' corners will not appear.
+  // Prevents rounded corners.
   out = ImFloor(out);
+
   return true;
 }
 
-bool os2::math::WorldToScreen(const glm::vec3& world_position,
-                              glm::vec2& screen_position) noexcept {
-  static auto& view_matrix =
-      *reinterpret_cast<glm::mat4x4*>(os2::fn::ViewMatrixAddress);
+// s/o:
+// https://github.com/bruhmoment21/cs2-sdk/blob/dc9636aad20975a052d779b771e5708db80051be/cs2-sdk/src/math/math.cpp#L39
+void os2::math::TransformAABB(const glm::mat3x4& mat, const glm::vec3& minsIn,
+                              const glm::vec3& maxsIn, glm::vec3& minsOut,
+                              glm::vec3& maxsOut) noexcept {
+  const glm::vec3 localCenter{(minsIn + maxsIn) * 0.5f};
+  const glm::vec3 localExtent{maxsIn - localCenter};
 
-  const glm::vec4 temp(world_position, 1.0f);
+  const glm::vec3 worldAxisX{mat[0][0], mat[0][1], mat[0][2]};
+  const glm::vec3 worldAxisY{mat[1][0], mat[1][1], mat[1][2]};
+  const glm::vec3 worldAxisZ{mat[2][0], mat[2][1], mat[2][2]};
 
-  // Perform the transformation calculations.
-  screen_position.x = glm::dot(temp, view_matrix[0]);
-  screen_position.y = glm::dot(temp, view_matrix[1]);
+  const glm::vec3 worldCenter = VecTransformMatrix(localCenter, mat);
+  const glm::vec3 worldExtent{AbsoluteDotProduct(localExtent, worldAxisX),
+                              AbsoluteDotProduct(localExtent, worldAxisY),
+                              AbsoluteDotProduct(localExtent, worldAxisZ)};
 
-  const float w = glm::dot(temp, view_matrix[3]);
-
-  // Check if the transformed point is behind the viewer's perspective.
-  if (w < 0.001f) return false;
-
-  const float inverse_w = 1.0f / w;
-
-  // Apply perspective division to obtain normalized screen coordinates.
-  screen_position.x *= inverse_w;
-  screen_position.y *= inverse_w;
-
-  const glm::vec2 screen_size = os2::iface::pEngine->GetScreenSize();
-
-  // Get the center of the screen.
-  float x = screen_size.x / 2.0f;
-  float y = screen_size.y / 2.0f;
-
-  // Calculate the final screen position.
-  x += 0.5f * screen_position.x * screen_size.x + 0.5f;
-  y -= 0.5f * screen_position.y * screen_size.y + 0.5f;
-
-  screen_position.x = x;
-  screen_position.y = y;
-
-  return true;
+  minsOut = worldCenter - worldExtent;
+  maxsOut = worldCenter + worldExtent;
 }
 
 void os2::math::ClampAngle(glm::vec3& angle) noexcept {
@@ -97,7 +82,6 @@ glm::vec3 os2::math::ToAngle(const glm::vec3& vec) noexcept {
           glm::degrees(std::atan2(vec.y, vec.y)), 0.00f};
 }
 
-
 glm::vec3 os2::math::CalculateRelativeAngle(
     const glm::vec3 source, const glm::vec3 dest,
     const glm::vec3& view_angles) noexcept {
@@ -113,7 +97,7 @@ glm::vec3 os2::math::CalculateRelativeAngle(
 }
 
 float os2::math::CalculateFOV(const glm::vec3& source,
-  const glm::vec3& dest) noexcept {
+                              const glm::vec3& dest) noexcept {
   glm::vec3 delta = dest - source;
 
   os2::math::NormalizeAngle(delta);
@@ -128,6 +112,20 @@ float os2::math::CalculateAngleRadians(const glm::vec3& source,
   os2::math::NormalizeAngle(delta);
 
   return std::atan2(delta.y, delta.x);
+}
+
+glm::vec3 os2::math::VecTransformMatrix(const glm::vec3& vec,
+                                        const glm::mat3x4& mat) noexcept {
+  return {
+      vec.x * mat[0][0] + vec.y * mat[0][1] + vec.z * mat[0][2] + mat[0][3],
+      vec.x * mat[1][0] + vec.y * mat[1][1] + vec.z * mat[1][2] + mat[1][3],
+      vec.x * mat[2][0] + vec.y * mat[2][1] + vec.z * mat[2][2] + mat[2][3]};
+}
+
+float os2::math::AbsoluteDotProduct(const glm::vec3& source,
+                                    const glm::vec3& rhs) noexcept {
+  return std::abs(source.x * rhs.x) + std::abs(source.y * rhs.y) +
+         std::abs(source.z * rhs.z);
 }
 
 template <typename T>

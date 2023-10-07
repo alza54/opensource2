@@ -18,6 +18,13 @@ typedef CHook<void __fastcall(void*, const std::int32_t)> FrameStageNotify_t;
 typedef CHook<__int64 __fastcall(void*)> LevelInit_t;
 typedef CHook<void __fastcall(void*, float)> SetInGameFOV_t;
 typedef CHook<__int64 __fastcall(void*, int)> GetInGameFOVPtr_t;
+typedef CHook<CMaterial2* __fastcall(CBaseSceneObjectDesc*, CMaterial2*,
+                                     CMaterialDrawDescriptor*, ISceneLayer*,
+                                     bool&)>
+    GetMaterialForDraw_t;
+typedef CHook<__int64 __fastcall(void*, unsigned int, __int64**, int,
+                                 C_SoundData*, unsigned __int8)>
+    EmitFootstepSound_t;
 
 namespace CHooks {
   static MouseInputEnabled_t MouseInputEnabled;
@@ -29,6 +36,8 @@ namespace CHooks {
   static LevelInit_t LevelInit;
   static SetInGameFOV_t SetInGameFOV;
   static GetInGameFOVPtr_t GetInGameFOVPtr;
+  static GetMaterialForDraw_t GetMaterialForDraw;
+  static EmitFootstepSound_t EmitFootstepSound;
 };  // namespace CHooks
 
 namespace Hooks {
@@ -48,7 +57,14 @@ namespace Hooks {
   static __int64 __fastcall LevelInit(void* rcx);
   static void __fastcall SetInGameFOV(void* rcx, float fov);
   static __int64 __fastcall GetInGameFOVPtr(void* rcx, int a2);
-};  // namespace Hooks
+  static CMaterial2* __fastcall GetMaterialForDraw(
+      CBaseSceneObjectDesc* scene_object_desc, CMaterial2* material,
+      CMaterialDrawDescriptor* material_draw_descriptor,
+      ISceneLayer* scene_layer, bool& unknown);
+  static __int64 __fastcall EmitFootstepSound(void*, unsigned int, __int64**,
+                                              int, C_SoundData*,
+                                              unsigned __int8);
+ };  // namespace Hooks
 
 const enum EHookIndexes {
   ON_ADD_ENTITY = 14,       // CGameEntitySystem instance
@@ -59,7 +75,7 @@ const enum EHookIndexes {
 
 namespace os2 {
   namespace game {
-  void initialise();
-  void unhook();
+    void initialise();
+    void unhook();
   };  // namespace game
 };  // namespace os2

@@ -6,11 +6,20 @@ using namespace os2;
 
 class ESP : public Feature {
  public:
+  enum Material {
+    WIREFRAME,
+    PRIMARY_WHITE,
+    REFLECTIVITY,
+    GLASS_OVERLAY,
+    BLACK_SIMPLE
+  };
+
   CONSTRUCT_FEATURE(ESP) {}
 
   CONFIG_GETTER(bool, Enabled)
   CONFIG_GETTER(bool, DrawGUI)
   CONFIG_GETTER(bool, DrawPlayerBoxes)
+  CONFIG_GETTER(bool, DrawPlayerBoxes3D)
   CONFIG_GETTER(bool, DrawPlayerName)
   CONFIG_GETTER(bool, DrawPlayerHealthbar)
   CONFIG_GETTER(bool, DrawPlayerActiveWeaponName)
@@ -31,6 +40,9 @@ class ESP : public Feature {
 
   CONFIG_GETTER(bool, DrawChickenBox)
 
+  CONFIG_GETTER(bool, RenderChams)
+  CONFIG_GETTER(Material, ChamsMaterial)
+
   void RenderUI() noexcept;
   void OnRender() noexcept override;
 
@@ -45,6 +57,7 @@ class ESP : public Feature {
         {("draw"),
          {{("gui"), config_.DrawGUI},
           {("player_boxes"), config_.DrawPlayerBoxes},
+          {("player_boxes_3d"), config_.DrawPlayerBoxes3D},
           {("player_name"), config_.DrawPlayerName},
           {("player_healthbar"), config_.DrawPlayerHealthbar},
           {("player_active_weapon_name"), config_.DrawPlayerActiveWeaponName},
@@ -60,6 +73,9 @@ class ESP : public Feature {
          {{("teammates"), config_.IgnoreTeammates},
           {("enemies"), config_.IgnoreEnemies},
           {("self"), config_.IgnoreSelf}}},
+        {("chams"),
+         {{("enabled"), config_.RenderChams},
+          {("material"), config_.ChamsMaterial}}},
         {("max_weapon_distance"), config_.MaxWeaponDistance}};
   }
 
@@ -69,6 +85,7 @@ class ESP : public Feature {
     const auto& draw = j.at("draw");
     config_.DrawGUI = draw.at(("gui")).get<bool>();
     config_.DrawPlayerBoxes = draw.at(("player_boxes")).get<bool>();
+    config_.DrawPlayerBoxes3D = draw.at(("player_boxes_3d")).get<bool>();
     config_.DrawPlayerName = draw.at(("player_name")).get<bool>();
     config_.DrawPlayerHealthbar = draw.at(("player_healthbar")).get<bool>();
     config_.DrawPlayerActiveWeaponName =
@@ -83,6 +100,10 @@ class ESP : public Feature {
     config_.DrawBombTimerText = draw.at(("bomb_timer_text")).get<bool>();
     config_.DrawBombTimerOverlay = draw.at(("bomb_timer_overlay")).get<bool>();
     config_.DrawChickenBox = draw.at(("chicken_box")).get<bool>();
+
+    const auto& chams = j.at("chams");
+    config_.RenderChams = chams.at(("render")).get<bool>();
+    config_.ChamsMaterial = chams.at(("material")).get<Material>();
 
     const auto& ignore = j.at("ignore");
     config_.IgnoreTeammates = ignore.at(("teammates")).get<bool>();
@@ -109,6 +130,7 @@ class ESP : public Feature {
     bool Enabled = false;
     bool DrawGUI = false;
     bool DrawPlayerBoxes = false;
+    bool DrawPlayerBoxes3D = false;
     bool DrawPlayerName = false;
     bool DrawPlayerHealthbar = false;
     bool DrawPlayerActiveWeaponName = false;
@@ -123,6 +145,8 @@ class ESP : public Feature {
     bool DrawBombTimerText = false;
     bool DrawBombTimerOverlay = false;
     bool DrawChickenBox = false;
+    bool RenderChams = false;
+    Material ChamsMaterial = Material::PRIMARY_WHITE;
     float MaxWeaponDistance = 0.0f;
   } config_;
 };

@@ -16,6 +16,7 @@ void os2::iface::initialise() {
   os2::module::tier0 = CModule::Create(tier0_dll);
   os2::module::localize = CModule::Create(localize_dll);
   os2::module::materialsystem = CModule::Create(materialsystem2_dll);
+  os2::module::scenesystem = CModule::Create(scenesystem_dll);
 
   FIND_INTERFACE(pGameResourceService, os2::module::engine,
                  game_resource_service_client);

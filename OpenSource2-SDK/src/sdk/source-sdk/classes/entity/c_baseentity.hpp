@@ -3,14 +3,12 @@
 #include "ccollisionproperty.hpp"
 #include "centityinstance.hpp"
 #include "cgamescenenode.hpp"
+#include "hitbox/hitbox.hpp"
 
 #include "../bitflag.hpp"
+#include "../.././../math/types/bbox_t.hpp"
 
 namespace os2::sdk {
-  struct BBox_t {
-    float x, y, w, h;
-  };
-
   class C_BaseEntity : public CEntityInstance {
    public:
     bool IsBasePlayerController();
@@ -21,12 +19,16 @@ namespace os2::sdk {
     bool IsPointCamera();
 
     glm::vec3 GetOrigin();
-    bool GetBoundingBox(os2::sdk::BBox_t& out,
-                        bool computeSurroundingBox = false);
+    bool CalculateBBoxByCollision(BBox_t& out);
+    bool CalculateBBoxByHitbox(BBox_t& out);
     bool ComputeHitboxSurroundingBox(Vector& mins, Vector& maxs);
     float DistanceToSquared(C_BaseEntity* pEntity);
 
     bool GetBonePosition(const std::int32_t boneIndex, glm::vec3& bonePosition);
+
+    CHitBoxSet* GetHitboxSet(int i);
+    int HitboxToWorldTransforms(CHitBoxSet* hitBoxSet,
+                                CTransform* hitboxToWorld);
 
     SCHEMA_FIELD(m_pGameSceneNode, "C_BaseEntity", "m_pGameSceneNode",
                  CGameSceneNode*);

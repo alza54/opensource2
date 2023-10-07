@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../../../math/classes/transform.hpp"
+
 namespace os2::sdk {
   class CSkeletonInstance;
 
@@ -14,6 +16,7 @@ namespace os2::sdk {
       return CALL_VIRTUAL(CSkeletonInstance*, 8, this);
     }
 
+    SCHEMA_FIELD(m_nodeToWorld, "CGameSceneNode", "m_nodeToWorld", CTransform);
     SCHEMA_FIELD(m_angAbsRotation, "CGameSceneNode", "m_angAbsRotation",
                  glm::vec3);
     SCHEMA_FIELD(m_angRotation, "CGameSceneNode", "m_angRotation", glm::vec3);

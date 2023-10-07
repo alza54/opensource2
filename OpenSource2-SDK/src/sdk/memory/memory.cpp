@@ -170,6 +170,23 @@ void os2::memory::initialise() {
   os2::module::client->FindPattern(TRACE_SMOKE)
       .Get(FUNCTION_VARIABLE(TraceSmoke));
 
+  os2::module::client->FindPattern(GET_HITBOX_SET)
+      .ToAbsolute(1, 0)
+      .Get(FUNCTION_VARIABLE(GetHitboxSet));
+
+  os2::module::client->FindPattern(HITBOX_TO_WORLD_TRANSFORMS)
+      .ToAbsolute(1, 0)
+      .Get(FUNCTION_VARIABLE(HitboxToWorldTransforms));
+
+  os2::module::scenesystem->FindPattern(DRAW_ARRAY_EXT)
+      .Get(FUNCTION_VARIABLE(DrawArrayExt));
+
+  os2::module::scenesystem->FindPattern(GET_MATERIAL_FOR_DRAW)
+      .Get(FUNCTION_VARIABLE(GetMaterialForDraw));
+
+  os2::module::client->FindPattern(EMIT_FOOTSTEP_SOUND)
+      .Get(FUNCTION_VARIABLE(EmitFootstepSound));
+
   os2::sdk::CModule sdl3(os2::memory::strings::sdl3_dll);
 
   // SDL Functions:

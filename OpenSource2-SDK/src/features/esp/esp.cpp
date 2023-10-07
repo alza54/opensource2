@@ -1,11 +1,11 @@
 #include <iomanip>
 #include <sstream>
 
-#include "../../sdk/interfaces/interfaces.hpp"
-
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
+
+#include "../../sdk/interfaces/interfaces.hpp"
 
 #include "../../game/state.hpp"
 #include "../../gamedata/gamedata.hpp"
@@ -34,12 +34,27 @@ void ESP::RenderUI() noexcept {
 
   ImGui::Checkbox("Enable ESP", &ESP::Enabled());
 
+  static const char* szESPType[] = {"2D Box", "3D Box"};
+  static int iESPType = 0;
+
+  switch (iESPType) {
+    case 0:
+      ESP::DrawPlayerBoxes() = true;
+      ESP::DrawPlayerBoxes3D() = false;
+      break;
+    case 1:
+      ESP::DrawPlayerBoxes3D() = true;
+      ESP::DrawPlayerBoxes() = false;
+      break;
+  }
+
   ImGui::SeparatorText("Player ESP");
-  ImGui::Checkbox("Players box", &ESP::DrawPlayerBoxes());
-  ImGui::Checkbox("Players skeleton", &ESP::DrawPlayerSkeleton());
-  ImGui::Checkbox("Players name", &ESP::DrawPlayerName());
-  ImGui::Checkbox("Players health-bar", &ESP::DrawPlayerHealthbar());
-  ImGui::Checkbox("Active weapon name", &ESP::DrawPlayerActiveWeaponName());
+  ImGui::Combo(szESPType[iESPType], &iESPType, szESPType, 2);
+  ImGui::Separator();
+  ImGui::Checkbox("Players Skeleton", &ESP::DrawPlayerSkeleton());
+  ImGui::Checkbox("Players Name", &ESP::DrawPlayerName());
+  ImGui::Checkbox("Players Health-bar", &ESP::DrawPlayerHealthbar());
+  ImGui::Checkbox("Active Weapon name", &ESP::DrawPlayerActiveWeaponName());
 
   ImGui::SeparatorText("ESP Filters");
   ImGui::Checkbox("Ignore teammates", &ESP::IgnoreTeammates());
@@ -61,6 +76,14 @@ void ESP::RenderUI() noexcept {
   ImGui::Checkbox("C4 Timer", &ESP::DrawBombTimer());
   ImGui::Checkbox("C4 Timer Text", &ESP::DrawBombTimerText());
   ImGui::Checkbox("C4 Timer Overlay", &ESP::DrawBombTimerOverlay());
+
+  static const char* szChamsType[] = {"Wireframe", "Primary White",
+                                      "Reflectivity 90%", "Glass Transparent", "Simple Black"};
+
+  ImGui::SeparatorText("Chams ESP");
+  ImGui::Checkbox("Enable", &ESP::RenderChams());
+  ImGui::Combo(szChamsType[ChamsMaterial()],
+                 reinterpret_cast<int*>(&ESP::ChamsMaterial()), szChamsType, 5);
 
   pFeatures->drawing->RenderShadow(
       ImGui::GetWindowPos(), ImGui::GetWindowSize().x, ImGui::GetWindowSize().y,
@@ -129,16 +152,36 @@ void ESP::CalculateBoundingBoxes() noexcept {
         C_CSPlayerPawn* pPlayerPawn =
             ((CCSPlayerController*)pEntity)->m_hPawn().Get<C_CSPlayerPawn>();
         if (pPlayerPawn)
-          it.shouldDrawEsp = pPlayerPawn->GetBoundingBox(it.boundingBox, false);
+          it.shouldDrawEsp = pPlayerPawn->CalculateBBoxByCollision(it.boundingBox);
       } break;
       case EEntityType::BASE_WEAPON:
-        it.shouldDrawEsp = pEntity->GetBoundingBox(it.boundingBox, true);
+        it.shouldDrawEsp = pEntity->CalculateBBoxByCollision(it.boundingBox);
         break;
       case EEntityType::CHICKEN:
-        it.shouldDrawEsp = pEntity->GetBoundingBox(it.boundingBox, false);
+        it.shouldDrawEsp = pEntity->CalculateBBoxByCollision(it.boundingBox);
         break;
       case EEntityType::PLANTED_C4:
-        it.shouldDrawEsp = pEntity->GetBoundingBox(it.boundingBox, true);
+        it.shouldDrawEsp = pEntity->CalculateBBoxByCollision(it.boundingBox);
+    }
+  }
+}
+
+void RenderBox3D(const BBox_t& bBox) noexcept {
+  for (int i = 0; i < 8; ++i) {
+    for (int j = 1; j <= 4; j <<= 1) {
+      if (!(i & j))
+        g_pGameData->DrawList()->AddLine(bBox.m_Vertices[i],
+                                         bBox.m_Vertices[i + j],
+                                         IM_COL32(0, 255, 0, 255), 2.5f);
+    }
+  }
+
+  for (int i = 0; i < 8; ++i) {
+    for (int j = 1; j <= 4; j <<= 1) {
+      if (!(i & j))
+        g_pGameData->DrawList()->AddLine(bBox.m_Vertices[i],
+                                         bBox.m_Vertices[i + j],
+                                         IM_COL32(255, 255, 255, 255));
     }
   }
 }
@@ -172,12 +215,12 @@ void ESP::RenderSkeleton(C_CSPlayerPawn* pPawn) noexcept {
     ImVec2 bone_screen_position;
     ImVec2 bone_screen_parent_position;
 
-    if (os2::math::WorldToScreenV1(
+    if (os2::math::WorldToScreen(
             os2::sdk::Vector(model_state.bones[i].position.x,
                              model_state.bones[i].position.y,
                              model_state.bones[i].position.z),
             bone_screen_position) &&
-        os2::math::WorldToScreenV1(
+        os2::math::WorldToScreen(
             os2::sdk::Vector(model_state.bones[bone_parent_index].position.x,
                              model_state.bones[bone_parent_index].position.y,
                              model_state.bones[bone_parent_index].position.z),
@@ -209,8 +252,8 @@ void ESP::RenderPlayerESP(CCSPlayerController* pPlayerController,
   else if (IgnoreSelf() && isLocalPlayer)
     return;
 
-  const ImVec2 min = {bBox.x, bBox.y};
-  const ImVec2 max = {bBox.w, bBox.h};
+  const ImVec2 min = bBox.m_Mins;
+  const ImVec2 max = bBox.m_Maxs;
 
   if (DrawPlayerBoxes()) {
     g_pGameData->DrawList()->AddRect(
@@ -221,18 +264,38 @@ void ESP::RenderPlayerESP(CCSPlayerController* pPlayerController,
                                      isLocalPlayer ? IM_COL32(52, 131, 235, 255)
                                      : isEnemy     ? IM_COL32(255, 0, 0, 255)
                                                    : IM_COL32(0, 255, 0, 255));
+  } else if (DrawPlayerBoxes3D()) {
+    RenderBox3D(bBox);
   }
 
   if (DrawPlayerName()) {
     const char* szName = pPlayerController->m_sSanitizedPlayerName();
     if (szName && strlen(szName) > 0) {
-      const ImVec2 textSize = ImGui::CalcTextSize(szName);
+      std::string szRenderName = "";
+
+      ImVec2 textSize = ImGui::CalcTextSize(szName);
+
+      if (textSize.x > (max.x - min.x)) {
+        const int textOverflow = static_cast<int>(
+            std::floor(((max.x - min.x) - textSize.x) / ImGui::CalcTextSize(" ").x));
+
+        if (textOverflow > 1) {
+          szRenderName =
+              std::string(szName).substr(0, strlen(szName) - textOverflow) +
+              "...";
+
+          textSize = ImGui::CalcTextSize(szRenderName.c_str());
+        }
+      } else {
+        szRenderName = szName;
+      }
+
       const ImVec2 textPos = ImFloor(
           {(min.x + max.x - textSize.x) / 2.f, min.y - textSize.y - 2.f});
-      g_pGameData->DrawList()->AddText(textPos + ImVec2{1, 1},
-                                       IM_COL32(0, 0, 0, 255), szName);
+      g_pGameData->DrawList()->AddText(
+          textPos + ImVec2{1, 1}, IM_COL32(0, 0, 0, 255), szRenderName.c_str());
       g_pGameData->DrawList()->AddText(textPos, IM_COL32(255, 255, 255, 255),
-                                       szName);
+                                       szRenderName.c_str());
     }
   }
 
@@ -282,8 +345,8 @@ void ESP::RenderWeaponESP(C_CSWeaponBase* pWeapon,
           (MaxWeaponDistance() * MaxWeaponDistance()))
     return;
 
-  const ImVec2 min = {bBox.x, bBox.y};
-  const ImVec2 max = {bBox.w, bBox.h};
+  const ImVec2 min = bBox.m_Mins;
+  const ImVec2 max = bBox.m_Maxs;
 
   if (DrawDroppedWeaponBoxes()) {
     g_pGameData->DrawList()->AddRect(
@@ -310,28 +373,46 @@ void ESP::RenderWeaponName(C_CSWeaponBase* pWeapon,
   CEconItemDefinition* pItemStaticData = pItemView->GetStaticData();
   if (!pItemStaticData) return;
 
+  std::string szRenderName = "";
+
   const char* szWeaponName =
       os2::iface::pLocalize->FindSafe(pItemStaticData->m_pszItemBaseName);
   if (!szWeaponName || strlen(szWeaponName) < 1) return;
 
-  const ImVec2 min = {bBox.x, bBox.y};
-  const ImVec2 max = {bBox.w, bBox.h};
+  const ImVec2 min = bBox.m_Mins;
+  const ImVec2 max = bBox.m_Maxs;
 
-  const ImVec2 textSize = ImGui::CalcTextSize(szWeaponName);
+  ImVec2 textSize = ImGui::CalcTextSize(szWeaponName);
+
+  if (textSize.x > (max.x - min.x)) {
+    const int textOverflow = static_cast<int>(
+        std::floor(((max.x - min.x) - textSize.x) / ImGui::CalcTextSize(" ").x));
+
+    if (textOverflow > 1) {
+      szRenderName = std::string(szWeaponName)
+                         .substr(0, strlen(szWeaponName) - textOverflow) +
+                     "...";
+
+      textSize = ImGui::CalcTextSize(szRenderName.c_str());
+    }
+  } else {
+    szRenderName = szWeaponName;
+  }
+
   const ImVec2 textPos =
       ImFloor({(min.x + max.x - textSize.x) / 2.f, max.y + textSize.y - 12.f});
 
-  g_pGameData->DrawList()->AddText(textPos + ImVec2{1, 1},
-                                   IM_COL32(0, 0, 0, 255), szWeaponName);
+  g_pGameData->DrawList()->AddText(
+      textPos + ImVec2{1, 1}, IM_COL32(0, 0, 0, 255), szRenderName.c_str());
   g_pGameData->DrawList()->AddText(textPos, IM_COL32(255, 255, 255, 255),
-                                   szWeaponName);
+                                   szRenderName.c_str());
 }
 
 void ESP::RenderChickenESP(C_Chicken* pChicken, const BBox_t& bBox) noexcept {
   CHandle hLeader = pChicken->m_leader();
 
-  const ImVec2 min = {bBox.x, bBox.y};
-  const ImVec2 max = {bBox.w, bBox.h};
+  const ImVec2 min = bBox.m_Mins;
+  const ImVec2 max = bBox.m_Maxs;
 
   if (DrawChickenBox()) {
     g_pGameData->DrawList()->AddRect(
@@ -346,24 +427,21 @@ void ESP::RenderChickenESP(C_Chicken* pChicken, const BBox_t& bBox) noexcept {
 }
 
 void ESP::RenderPlantedC4(C_PlantedC4* pBomb, const BBox_t& bBox) noexcept {
-  const ImVec2 min = {bBox.x, bBox.y};
-  const ImVec2 max = {bBox.w, bBox.h};
+  const ImVec2 min = bBox.m_Mins;
+  const ImVec2 max = bBox.m_Maxs;
 
   if (!DrawPlantedBomb() || !pBomb->m_bBombTicking()) return;
 
   const ImVec2 vec1 = {1.f, 1.f};
 
-  g_pGameData->DrawList()->AddRect(min - vec1, max + vec1,
-                                   IM_COL32(255, 0, 0, 255));
-  g_pGameData->DrawList()->AddRect(min + vec1, max - vec1,
-                                   IM_COL32(255, 0, 0, 255));
+  RenderBox3D(bBox);
 
   const auto pDraw = pFeatures->drawing.get();
 
   const float blowTime =
       pBomb->m_flC4Blow() - Game::State::GlobalVars->current_time;
 
-  const ImVec2 drawPosition = {(min.x + max.x - bBox.w) / 2.f, max.y + 20 + 6};
+  const ImVec2 drawPosition = {min.x, min.y + 20 + 6};
 
   if (DrawBombTimer()) {
     const auto color = pDraw->BombColorFade(blowTime, pBomb->m_flTimerLength());
@@ -378,7 +456,7 @@ void ESP::RenderPlantedC4(C_PlantedC4* pBomb, const BBox_t& bBox) noexcept {
 
     const auto szBlowTime = ss.str();
 
-    pDraw->RenderCenteredTextWithOutline(drawPosition, bBox.w, 20, szBlowTime);
+    pDraw->RenderCenteredTextWithOutline(drawPosition, max.x - min.x, 20, szBlowTime);
   }
 
   if (DrawBombTimerOverlay()) {

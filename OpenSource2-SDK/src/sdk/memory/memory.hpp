@@ -33,11 +33,10 @@
 
 #include "../source-sdk/classes/ccsgoinput.hpp"
 
-// #include "../source-sdk/classes/c_trace.hpp"
-
-// #include "../source-sdk/interfaces/cgametracemanager.hpp"
+#include "../source-sdk/classes/material_system/material_system.hpp"
 
 #include "../source-sdk/classes/types/cglobalvarsbase.hpp"
+#include "../source-sdk/classes/types/c_sounddata.hpp"
 
 #include "../source-sdk/interfaces/cgameeventmanager.hpp"
 
@@ -51,6 +50,7 @@ namespace os2 {
       OS2_STRING_LIST tier0_dll = TIER0_DLL;
       OS2_STRING_LIST localize_dll = LOCALIZE_DLL;
       OS2_STRING_LIST materialsystem2_dll = MATERIALSYSTEM2_DLL;
+      OS2_STRING_LIST scenesystem_dll = SCENESYSTEM_DLL;
       OS2_STRING_LIST sdl3_dll = SDL3_DLL;
 
       OS2_STRING_LIST game_resource_service_client =
@@ -148,6 +148,21 @@ namespace os2 {
     inline void(__fastcall* SetInGameFov)(void*, float);
     inline float(__fastcall* GetSceneCameraFov)(void*);
     inline __int64(__fastcall* GetInGameFovPtr)(void*, int);
+
+    // Hitboxes
+    inline os2::sdk::CHitBoxSet*(__fastcall* GetHitboxSet)(void*, int);
+    inline int(__fastcall* HitboxToWorldTransforms)(void*,
+                                                    os2::sdk::CHitBoxSet*,
+                                                    CTransform*, int);
+
+    // Rendering
+    inline void* DrawArrayExt;
+    inline void* GetMaterialForDraw;
+
+    // Sound ESP
+    inline __int64(__fastcall* EmitFootstepSound)(void*, unsigned int, __int64,
+                                                  int, C_SoundData*,
+                                                  unsigned __int8);
   }; // namespace fn
 };  // namespace os2
 
